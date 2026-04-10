@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>COSMAX NBT USA — Business Performance</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --sb:#0f1b35;--bg:#f0f2f8;--white:#fff;
+  --blue:#2563eb;--blue2:#eff4ff;--blue3:#dbeafe;
+  --green:#059669;--green2:#d1fae5;
+  --red:#dc2626;--red2:#fee2e2;
+  --orange:#d97706;--orange2:#fef3c7;
+  --teal:#0891b2;--teal2:#cffafe;
+  --purple:#7c3aed;--purple2:#ede9fe;
+  --gray:#6b7280;--gray2:#f9fafb;--gray3:#e5e7eb;--gray4:#d1d5db;
+  --text:#111827;--text2:#6b7280;--text3:#9ca3af;
+  --r:10px;--r2:14px;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+  --sh2:0 4px 16px rgba(0,0,0,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;font-size:13px;}
+
+/* ─── SIDEBAR ─── */
+.sidebar{width:224px;flex-shrink:0;background:var(--sb);display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;z-index:100;overflow-y:auto;}
+.sb-logo{padding:16px 16px 18px;border-bottom:1px solid rgba(255,255,255,.1);background:#fff;}
+.sb-logo img{width:176px;max-width:100%;display:block;}
+.sb-sect{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.45);padding:16px 20px 5px;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 20px;font-size:13.5px;font-weight:500;color:rgba(255,255,255,.68);cursor:pointer;border-left:3px solid transparent;transition:all .15s;user-select:none;}
+.sb-item:hover{background:rgba(255,255,255,.07);color:#fff;}
+.sb-item.active{background:rgba(59,130,246,.18);color:#fff;border-left-color:#3b82f6;font-weight:600;}
+.sb-item .ico{font-size:15px;width:18px;text-align:center;}
+.sb-badge{margin-left:auto;background:#2563eb;color:#fff;font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px;}
+.sb-div{height:1px;background:rgba(255,255,255,.08);margin:8px 16px;}
+.sb-user{display:flex;align-items:center;gap:9px;padding:14px 18px;border-top:1px solid rgba(255,255,255,.08);margin-top:auto;}
+.avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+
+/* ─── MAIN ─── */
+.main{margin-left:224px;flex:1;min-width:0;}
+.topbar{background:#fff;border-bottom:1px solid var(--gray3);padding:13px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.page-title{font-size:21px;font-weight:700;}
+.page-sub{font-size:11.5px;color:var(--text2);margin-top:2px;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.tag{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;}
+.tag.live{background:#d1fae5;color:#059669;}
+.tag.ytd{background:var(--blue2);color:var(--blue);}
+
+.content{padding:22px 24px;}
+.pane{display:none;animation:fadeIn .2s ease;}
+.pane.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+/* ─── KPI ─── */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px;}
+.kpi{background:#fff;border-radius:var(--r2);padding:16px 18px;box-shadow:var(--sh);border:1px solid var(--gray3);}
+.kpi-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+.kpi-ico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.badge{font-size:10px;font-weight:600;padding:3px 8px;border-radius:7px;}
+.badge.up{background:var(--green2);color:var(--green);}
+.badge.warn{background:var(--orange2);color:var(--orange);}
+.badge.neu{background:var(--gray2);color:var(--gray);}
+.badge.info{background:var(--teal2);color:var(--teal);}
+.kpi-lbl{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;}
+.kpi-val{font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1;}
+.kpi-bar{height:3px;background:var(--gray3);border-radius:2px;margin-top:10px;overflow:hidden;}
+.kpi-fill{height:100%;border-radius:2px;}
+.kpi-sub{font-size:10.5px;color:var(--text3);margin-top:5px;}
+
+/* ─── CARDS ─── */
+.sec{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.sec::before{content:'';width:4px;height:14px;background:var(--blue);border-radius:2px;}
+.card{background:#fff;border-radius:var(--r2);border:1px solid var(--gray3);box-shadow:var(--sh);padding:18px 20px;}
+.g2{display:grid;grid-template-columns:1fr 340px;gap:14px;margin-bottom:14px;}
+.g2r{display:grid;grid-template-columns:340px 1fr;gap:14px;margin-bottom:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.full{margin-bottom:14px;}
+
+/* ─── TABLE ─── */
+.tbl{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text);text-align:right;padding:10px 12px;border-bottom:2px solid var(--gray3);white-space:nowrap;background:var(--gray2);}
+th:first-child{text-align:left;}
+td{padding:9px 12px;border-bottom:1px solid var(--gray2);text-align:right;font-size:12.5px;color:var(--text);white-space:nowrap;}
+td:first-child{text-align:left;font-weight:600;font-size:13px;}
+tr:hover td{background:#f8faff;cursor:pointer;}
+tr.tot td{font-weight:700;font-size:13px;background:#eef2ff;border-top:2px solid #c7d2fe;border-bottom:none;}
+.pos{color:var(--green)!important;}
+.neg{color:var(--red)!important;}
+.chip{display:inline-flex;align-items:center;padding:3px 9px;border-radius:8px;font-size:11px;font-weight:700;}
+.chip.pos{background:var(--green2);color:var(--green);}
+.chip.neg{background:var(--red2);color:var(--red);}
+.chip.zero{background:var(--gray2);color:var(--gray);}
+.chip.info{background:var(--teal2);color:var(--teal);}
+.chip.warn{background:var(--orange2);color:var(--orange);}
+
+/* ─── MINI BARS ─── */
+.mbar{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+.mbar-n{font-size:11px;font-weight:500;color:var(--text);width:105px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.mbar-t{flex:1;height:5px;background:var(--gray3);border-radius:3px;overflow:hidden;}
+.mbar-f{height:100%;border-radius:3px;}
+.mbar-v{font-size:11px;color:var(--text2);width:62px;text-align:right;flex-shrink:0;}
+
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;}
+.leg{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2);}
+.leg-d{width:8px;height:8px;border-radius:2px;}
+
+/* ─── CHART LABEL PLUGIN ─── */
+/* chart labels shown on bars */
+
+/* ─── MONTHLY FILTER ─── */
+.mo-filter{background:var(--sb);border-radius:var(--r2);padding:13px 20px;display:flex;align-items:center;gap:20px;margin-bottom:16px;}
+.mo-filter label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.45);display:block;margin-bottom:4px;}
+.mo-filter select{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;padding:7px 30px 7px 12px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='rgba(255,255,255,0.5)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
+.mo-filter select option{background:#1e293b;color:#fff;}
+.mo-kpi-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr auto auto;gap:10px;margin-bottom:14px;align-items:start;}
+.mo-kpi{background:#fff;border:1px solid var(--gray3);border-radius:var(--r);padding:12px 14px;box-shadow:var(--sh);}
+.mo-kpi .lbl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text2);margin-bottom:4px;}
+.mo-kpi .val{font-size:20px;font-weight:700;letter-spacing:-.02em;}
+.mo-grp{background:#fff;border:1px solid var(--gray3);border-radius:var(--r);padding:10px 14px;box-shadow:var(--sh);}
+.mo-grp-t{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text);margin-bottom:7px;padding-bottom:6px;border-bottom:1px solid var(--gray3);}
+.mo-grp-r{display:flex;gap:16px;}
+.mo-grp-i .lbl{font-size:9px;font-weight:700;text-transform:uppercase;color:var(--text2);text-align:center;}
+.mo-grp-i .val{font-size:18px;font-weight:700;text-align:center;margin-top:1px;}
+
+/* ─── PRODUCTS PAGE ─── */
+.prod-layout{display:grid;grid-template-columns:260px 1fr;gap:14px;min-height:600px;}
+.prod-sidebar{background:#fff;border-radius:var(--r2);border:1px solid var(--gray3);box-shadow:var(--sh);overflow:hidden;}
+.prod-sidebar-title{padding:14px 16px;background:var(--sb);color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+.cust-item{padding:10px 16px;cursor:pointer;border-bottom:1px solid var(--gray3);transition:background .15s;}
+.cust-item:hover{background:var(--blue2);}
+.cust-item.active{background:var(--blue2);border-left:3px solid var(--blue);}
+.cust-name{font-size:13px;font-weight:600;color:var(--text);}
+.cust-meta{font-size:11px;color:var(--text2);margin-top:2px;}
+.prod-item{padding:8px 16px 8px 24px;cursor:pointer;border-bottom:1px solid var(--gray2);transition:background .15s;display:flex;align-items:center;gap:8px;}
+.prod-item:hover{background:#f0f7ff;}
+.prod-item.active{background:var(--blue2);border-left:3px solid var(--blue);}
+.prod-item .dot{width:6px;height:6px;border-radius:50%;background:var(--blue2);border:1.5px solid var(--blue);flex-shrink:0;}
+.prod-item-name{font-size:12px;color:var(--text);font-weight:500;line-height:1.3;}
+
+/* Detail panel */
+.prod-detail{background:#fff;border-radius:var(--r2);border:1px solid var(--gray3);box-shadow:var(--sh);padding:20px;}
+.prod-detail-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;padding-bottom:14px;border-bottom:2px solid var(--gray3);}
+.prod-detail-name{font-size:17px;font-weight:700;color:var(--text);}
+.prod-detail-cust{font-size:12px;color:var(--text2);margin-top:3px;}
+.detail-kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px;}
+.dkpi{background:var(--gray2);border-radius:var(--r);padding:12px 14px;text-align:center;}
+.dkpi .lbl{font-size:10px;font-weight:600;text-transform:uppercase;color:var(--text2);letter-spacing:.05em;margin-bottom:4px;}
+.dkpi .val{font-size:18px;font-weight:700;color:var(--text);}
+
+/* Status badge */
+.status-chip{display:inline-flex;align-items:center;padding:2px 9px;border-radius:10px;font-size:10.5px;font-weight:600;}
+.status-yes{background:var(--green2);color:var(--green);}
+.status-transit{background:var(--orange2);color:var(--orange);}
+.status-sched{background:var(--teal2);color:var(--teal);}
+.status-pend{background:var(--gray2);color:var(--gray);}
+
+/* Clickable product row */
+tr.clickable:hover td{background:#f0f7ff!important;cursor:pointer;}
+tr.clickable:hover td:first-child{color:var(--blue)!important;text-decoration:underline;}
+</style>
+</head>
+<body>
+<style>
+#loginScreen{
+  position:fixed;inset:0;
+  background:linear-gradient(135deg,#0f1b35 0%,#1a3354 100%);
+  display:flex;align-items:center;justify-content:center;
+  z-index:9999;
+}
+#loginScreen.hidden{display:none;}
+.login-card{
+  background:#fff;border-radius:20px;
+  padding:44px 40px;
+  box-shadow:0 24px 64px rgba(0,0,0,.35);
+  text-align:center;width:360px;
+}
+.login-logo{margin-bottom:24px;}
+.login-logo img{height:38px;}
+.login-title{font-size:18px;font-weight:700;color:#111827;margin-bottom:6px;}
+.login-sub{font-size:12.5px;color:#6b7280;margin-bottom:28px;line-height:1.5;}
+.login-input-wrap{position:relative;margin-bottom:12px;}
+.login-input{
+  width:100%;padding:11px 44px 11px 14px;
+  border:2px solid #e5e7eb;border-radius:10px;
+  font-size:14px;font-family:'Inter',sans-serif;
+  outline:none;transition:border .2s;letter-spacing:.12em;
+  text-align:center;font-weight:600;
+}
+.login-input:focus{border-color:#2563eb;}
+.login-input.error{border-color:#dc2626;animation:shake .3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+.login-btn{
+  width:100%;padding:12px;
+  background:#0f1b35;color:#fff;
+  border:none;border-radius:10px;
+  font-size:14px;font-weight:600;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:background .2s;
+  margin-bottom:12px;
+}
+.login-btn:hover{background:#1a3354;}
+.login-btn:active{transform:scale(.98);}
+.login-error{
+  font-size:12px;color:#dc2626;
+  background:#fef2f2;border:1px solid #fecaca;
+  border-radius:8px;padding:8px 12px;
+  margin-bottom:12px;display:none;
+}
+.login-error.show{display:block;}
+.login-footer{font-size:11px;color:#9ca3af;margin-top:16px;}
+.eye-btn{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;font-size:16px;color:#9ca3af;
+}
+</style>
+
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <img src="data:image/png;base64,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" alt="COSMAX NBT USA">
+    </div>
+    <div class="login-title">Business Performance Dashboard</div>
+    <div class="login-sub">Enter your access code to continue</div>
+    <div class="login-input-wrap">
+      <input type="password" id="accessCode" class="login-input"
+        placeholder="Enter access code"
+        onkeydown="if(event.key==='Enter')checkCode()"
+        autocomplete="off" spellcheck="false">
+      <button class="eye-btn" onclick="togglePw()" tabindex="-1">👁</button>
+    </div>
+    <div class="login-error" id="loginError">
+      ❌ Invalid access code. Please try again.
+    </div>
+    <button class="login-btn" onclick="checkCode()">Sign In →</button>
+    <div class="login-footer">COSMAX NBT USA · Authorized Personnel Only</div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════
+//  ACCESS CODE 관리
+//  → GitHub에서 이 부분만 수정하면 됩니다
+//  → 코드 변경 시 기존 코드는 즉시 차단됩니다
+// ════════════════════════════════════════════
+const ACCESS_CODES = {
+  "CM2026IT":  "IT Manager",        // itcosmaxnbtusa
+  "CM2026HR":  "Hurmy (Manager)",   // hurmy@cosmax.com
+  // 직원 추가 방법: "코드": "이름" 형태로 추가
+  // "CM2026JK":  "직원 이름",
+};
+// ════════════════════════════════════════════
+
+const SESSION_KEY = 'cosmax_auth';
+const SESSION_DAYS = 30; // 30일 후 자동 로그아웃
+
+function checkCode() {
+  const input = document.getElementById('accessCode').value.trim().toUpperCase();
+  const err = document.getElementById('loginError');
+
+  if (ACCESS_CODES[input]) {
+    // 인증 성공
+    const expiry = Date.now() + (SESSION_DAYS * 24 * 60 * 60 * 1000);
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+      code: input, name: ACCESS_CODES[input], expiry
+    }));
+    showDashboard(ACCESS_CODES[input]);
+    err.classList.remove('show');
+  } else {
+    // 인증 실패
+    err.classList.add('show');
+    const inp = document.getElementById('accessCode');
+    inp.classList.add('error');
+    setTimeout(() => inp.classList.remove('error'), 400);
+    inp.value = '';
+    inp.focus();
+  }
+}
+
+function showDashboard(name) {
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('mainApp').style.display = 'flex';
+  // 사이드바 이름 업데이트
+  const nameEl = document.querySelector('.sb-user div div:first-child');
+  const subEl  = document.querySelector('.sb-user div div:last-child');
+  const avEl   = document.querySelector('.avatar');
+  if(nameEl) nameEl.textContent = name;
+  if(subEl)  subEl.textContent  = 'Authorized User';
+  if(avEl)   avEl.textContent   = name.charAt(0).toUpperCase();
+  // 로그아웃 버튼
+  const sbUser = document.querySelector('.sb-user');
+  if(sbUser && !document.getElementById('logoutBtn')) {
+    const btn = document.createElement('button');
+    btn.id = 'logoutBtn';
+    btn.innerHTML = '↩';
+    btn.title = 'Sign Out';
+    btn.style.cssText = 'background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.6);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:13px;margin-left:auto;flex-shrink:0;';
+    btn.onclick = logout;
+    sbUser.appendChild(btn);
+  }
+}
+
+function logout() {
+  localStorage.removeItem(SESSION_KEY);
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('mainApp').style.display = 'none';
+  document.getElementById('accessCode').value = '';
+}
+
+function togglePw() {
+  const inp = document.getElementById('accessCode');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+// 세션 체크 (8시간 유지)
+window.addEventListener('DOMContentLoaded', () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(SESSION_KEY));
+    if (saved && saved.expiry > Date.now() && ACCESS_CODES[saved.code]) {
+      showDashboard(ACCESS_CODES[saved.code]);
+    }
+  } catch(e) {}
+  document.getElementById('accessCode').focus();
+});
+</script>
+
+<div id="mainApp" style="display:none;width:100%;min-height:100vh;">
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sb-logo"><img src="data:image/png;base64,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" alt="COSMAX NBT USA"></div>
+  <div>
+    <div class="sb-sect">Main Menu</div>
+    <div class="sb-item active" onclick="goTab('overview',this)"><span class="ico">📊</span>Overview</div>
+    <div class="sb-item" onclick="goTab('monthly',this)"><span class="ico">📅</span>Monthly Analysis</div>
+    <div class="sb-div"></div>
+    <div class="sb-sect">Management</div>
+    <div class="sb-item" onclick="goTab('customers',this)"><span class="ico">👥</span>Customers</div>
+    <div class="sb-item" onclick="goTab('products',this)"><span class="ico">📦</span>Products</div>
+    <div class="sb-item" onclick="goTab('logistics',this)"><span class="ico">🚢</span>Logistics</div>
+    <div class="sb-div"></div>
+    <div class="sb-sect">Finance</div>
+    <div class="sb-item"><span class="ico">💰</span>Profitability</div>
+    <div class="sb-item"><span class="ico">📈</span>Analytics<span class="sb-badge">NEW</span></div>
+  </div>
+  <div class="sb-user">
+    <div class="avatar">IT</div>
+    <div><div style="color:#fff;font-weight:600;font-size:12px;">IT Manager</div><div style="font-size:10px;color:rgba(255,255,255,.5);">SAP Admin</div></div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+<div class="topbar">
+  <div>
+    <div class="page-title" id="pageTitle">Business Performance Overview</div>
+    <div class="page-sub">2026 YTD · SAP RAW DATA · Last updated Apr 09, 2026</div>
+  </div>
+  <div class="topbar-right">
+    <span class="tag live">● Live</span>
+    <span class="tag ytd">2026 YTD</span>
+  </div>
+</div>
+<div class="content">
+<div id="pane-overview" class="pane active">
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="kpi-top"><div class="kpi-ico" style="background:#eff6ff;">📋</div><span class="badge up">16 done</span></div>
+    <div class="kpi-lbl">Total POs</div><div class="kpi-val">56</div>
+    <div class="kpi-bar"><div class="kpi-fill" style="width:29%;background:var(--blue)"></div></div>
+    <div class="kpi-sub">16 done · 1 transit · 5 sched · 34 pending</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-top"><div class="kpi-ico" style="background:#fef3c7;">🚢</div><span class="badge warn">1 active</span></div>
+    <div class="kpi-lbl">In Transit</div><div class="kpi-val" style="color:var(--orange)">1</div>
+    <div class="kpi-sub">5 scheduled · 34 pending</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-top"><div class="kpi-ico" style="background:#eff6ff;">💼</div></div>
+    <div class="kpi-lbl">Total Order Value</div>
+    <div class="kpi-val" style="font-size:20px;">$6,907,050</div>
+    <div class="kpi-sub">All PO lines incl. pipeline</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-top"><div class="kpi-ico" style="background:#eff6ff;">💰</div></div>
+    <div class="kpi-lbl">Confirmed Revenue</div>
+    <div class="kpi-val" style="font-size:20px;color:var(--blue)">$2,402,295</div>
+    <div class="kpi-sub">Closing = Yes rows only</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-top"><div class="kpi-ico" style="background:#d1fae5;">📈</div><span class="badge up">17.7%</span></div>
+    <div class="kpi-lbl">Net Profit</div>
+    <div class="kpi-val" style="font-size:20px;color:var(--green)">$426,096</div>
+    <div class="kpi-bar"><div class="kpi-fill" style="width:18%;background:var(--green)"></div></div>
+  </div>
+</div>
+<div class="g2">
+<div class="card">
+<div class="sec">Customer Performance</div>
+<div class="tbl"><table>
+<thead><tr><th>Customer</th><th>Lines</th><th>Order Value</th><th>Revenue</th><th>Supply</th><th>Net Profit</th><th>Margin</th><th>Done</th><th>Pending</th></tr></thead><tbody>
+<tr class="clickable" onclick="goTab('customers',null,'doTERRA')"><td>doTERRA</td><td>20</td><td>$4,951,422</td><td>$1,981,997</td><td>$1,607,759</td><td class="pos">+$374,238</td><td><span class="chip pos">18.9%</span></td><td>7</td><td>13</td></tr>
+<tr class="clickable" onclick="goTab('customers',null,'Prose')"><td>Prose</td><td>6</td><td>$472,344</td><td>$187,719</td><td>$161,859</td><td class="pos">+$23,108</td><td><span class="chip pos">12.3%</span></td><td>2</td><td>4</td></tr>
+<tr class="clickable" onclick="goTab('customers',null,'YOUNG LIVING ESSENTIAL OILS, LC')"><td>YOUNG LIVING ESSENTIAL OILS, LC</td><td>9</td><td>$456,471</td><td>$152,471</td><td>$116,961</td><td class="pos">+$35,510</td><td><span class="chip pos">23.3%</span></td><td>3</td><td>6</td></tr>
+<tr class="clickable" onclick="goTab('customers',null,'MANNATECH INC (U.S.A)')"><td>MANNATECH INC (U.S.A)</td><td>8</td><td>$292,182</td><td>$59,922</td><td>$66,528</td><td class="neg">-$6,606</td><td><span class="chip neg">-11.0%</span></td><td>1</td><td>7</td></tr>
+<tr class="clickable" onclick="goTab('customers',null,'SpoiledChild, Inc.')"><td>SpoiledChild, Inc.</td><td>3</td><td>$14,475</td><td>$20,186</td><td>$20,340</td><td class="neg">-$154</td><td><span class="chip neg">-0.8%</span></td><td>3</td><td>0</td></tr>
+<tr class="clickable" onclick="goTab('customers',null,'Alo')"><td>Alo</td><td>4</td><td>$134,937</td><td>—</td><td>—</td><td class="">—</td><td><span class="chip zero">0.0%</span></td><td>0</td><td>4</td></tr>
+<tr class="clickable" onclick="goTab('customers',null,'ExegiPharma')"><td>ExegiPharma</td><td>2</td><td>$79,279</td><td>—</td><td>—</td><td class="">—</td><td><span class="chip zero">0.0%</span></td><td>0</td><td>2</td></tr>
+<tr class="clickable" onclick="goTab('customers',null,'Immunotec')"><td>Immunotec</td><td>3</td><td>$151,940</td><td>—</td><td>—</td><td class="">—</td><td><span class="chip zero">0.0%</span></td><td>0</td><td>3</td></tr>
+<tr class="clickable" onclick="goTab('customers',null,'Limelife USA')"><td>Limelife USA</td><td>1</td><td>$354,000</td><td>—</td><td>—</td><td class="">—</td><td><span class="chip zero">0.0%</span></td><td>0</td><td>1</td></tr>
+<tr class="tot"><td>TOTAL</td><td>56</td><td>$6,907,050</td><td>$2,402,295</td><td>$1,973,447</td><td class="pos">+$426,096</td><td><span class="chip pos">17.7%</span></td><td>16</td><td>34</td></tr>
+</tbody></table></div></div>
+<div class="card">
+<div class="sec">Revenue Share</div>
+<div style="position:relative;height:190px;">
+  <canvas id="donutChart"></canvas>
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;">
+    <div style="font-size:20px;font-weight:700;color:#111827;">$2.4M</div>
+    <div style="font-size:10px;color:#6b7280;margin-top:1px;">Revenue YTD</div>
+  </div>
+</div>
+<div style="margin-top:14px;">
+<div class="mbar"><span class="mbar-n">doTERRA</span><div class="mbar-t"><div class="mbar-f" style="width:83%;background:#1d4ed8"></div></div><span class="mbar-v">$1982K</span></div>
+<div class="mbar"><span class="mbar-n">Prose</span><div class="mbar-t"><div class="mbar-f" style="width:8%;background:#7c3aed"></div></div><span class="mbar-v">$188K</span></div>
+<div class="mbar"><span class="mbar-n">YOUNG LIVING ESSENTIAL OILS, LC</span><div class="mbar-t"><div class="mbar-f" style="width:6%;background:#0891b2"></div></div><span class="mbar-v">$152K</span></div>
+<div class="mbar"><span class="mbar-n">MANNATECH INC (U.S.A)</span><div class="mbar-t"><div class="mbar-f" style="width:2%;background:#059669"></div></div><span class="mbar-v">$60K</span></div>
+<div class="mbar"><span class="mbar-n">SpoiledChild, Inc.</span><div class="mbar-t"><div class="mbar-f" style="width:1%;background:#d97706"></div></div><span class="mbar-v">$20K</span></div>
+</div></div></div>
+<div class="card full">
+<div class="sec">Product Performance &nbsp;<span style="font-size:11px;font-weight:400;color:var(--blue);cursor:default;">← Click a row to view details</span></div>
+<div class="tbl"><table>
+<thead><tr><th>Product</th><th>Customer</th><th>Lines</th><th>Qty Shipped</th><th>Revenue</th><th>Supply</th><th>Net Profit</th><th>Margin</th><th>Unit Price</th></tr></thead><tbody>
+<tr class="clickable" onclick="goToProduct('[doT] EO Mega_2.5g*90sfg_US')"><td style="font-size:12px;">[doT] EO Mega_2.5g*90sfg_US</td><td style="font-size:12px;">doTERRA</td><td>12</td><td>285,678</td><td>$1,981,997</td><td>$1,607,759</td><td class="pos">+$374,238</td><td><span class="chip pos">18.9%</span></td><td>$5.67</td></tr>
+<tr class="clickable" onclick="goToProduct('[PRO] Keranat Oil Bulk_ 0.3g* 1000 sfg')"><td style="font-size:12px;">[PRO] Keranat Oil Bulk_ 0.3g* 1000 sfg</td><td style="font-size:12px;">Prose</td><td>6</td><td>2,368</td><td>$187,719</td><td>$161,859</td><td class="pos">+$23,108</td><td><span class="chip pos">12.3%</span></td><td>$41.34</td></tr>
+<tr class="clickable" onclick="goToProduct('[YoungL] Green Omega 3 60ct UK')"><td style="font-size:12px;">[YoungL] Green Omega 3 60ct UK</td><td style="font-size:12px;">YOUNG LIVING ESSENTIAL OILS, LC</td><td>1</td><td>10,062</td><td>$76,471</td><td>$58,661</td><td class="pos">+$17,810</td><td><span class="chip pos">23.3%</span></td><td>$5.83</td></tr>
+<tr class="clickable" onclick="goToProduct('[YoungL] Green Omega 3 60ct AT')"><td style="font-size:12px;">[YoungL] Green Omega 3 60ct AT</td><td style="font-size:12px;">YOUNG LIVING ESSENTIAL OILS, LC</td><td>3</td><td>10,000</td><td>$76,000</td><td>$58,300</td><td class="pos">+$17,700</td><td><span class="chip pos">23.3%</span></td><td>$5.83</td></tr>
+<tr class="clickable" onclick="goToProduct('[MTEX] Omega3 +VitaminD3 US_1.05g* 60sfg')"><td style="font-size:12px;">[MTEX] Omega3 +VitaminD3 US_1.05g* 60sfg</td><td style="font-size:12px;">MANNATECH INC (U.S.A)</td><td>1</td><td>8,066</td><td>$59,922</td><td>$66,528</td><td class="neg">$-6,606</td><td><span class="chip neg">-11.0%</span></td><td>$6.13</td></tr>
+<tr class="clickable" onclick="goToProduct('[SC] Supergreens Pine Mint 390g Jar')"><td style="font-size:12px;">[SC] Supergreens Pine Mint 390g Jar</td><td style="font-size:12px;">SpoiledChild, Inc.</td><td>1</td><td>211</td><td>$6,760</td><td>$6,706</td><td class="pos">+$54</td><td><span class="chip pos">0.8%</span></td><td>$19.9</td></tr>
+<tr class="clickable" onclick="goToProduct('[SC] Supergreens Pine 360g Jar')"><td style="font-size:12px;">[SC] Supergreens Pine 360g Jar</td><td style="font-size:12px;">SpoiledChild, Inc.</td><td>1</td><td>210</td><td>$6,740</td><td>$6,686</td><td class="pos">+$54</td><td><span class="chip pos">0.8%</span></td><td>$19.9</td></tr>
+<tr class="clickable" onclick="goToProduct('[SC] Mushroom Coffee Powder Jar Pilot')"><td style="font-size:12px;">[SC] Mushroom Coffee Powder Jar Pilot</td><td style="font-size:12px;">SpoiledChild, Inc.</td><td>1</td><td>118</td><td>$6,686</td><td>$6,948</td><td class="neg">$-262</td><td><span class="chip neg">-3.9%</span></td><td>$38.49</td></tr>
+<tr class="clickable" onclick="goToProduct('[ALO] Digest & Debloat 650 mg * 60 cs')"><td style="font-size:12px;">[ALO] Digest & Debloat 650 mg * 60 cs</td><td style="font-size:12px;">Alo</td><td>1</td><td>0</td><td>—</td><td>—</td><td class="">—</td><td><span class="chip zero">0.0%</span></td><td>$5.04</td></tr>
+<tr class="clickable" onclick="goToProduct('[ALO] Sleep Capsules 825 mg * 14 cs')"><td style="font-size:12px;">[ALO] Sleep Capsules 825 mg * 14 cs</td><td style="font-size:12px;">Alo</td><td>1</td><td>0</td><td>—</td><td>—</td><td class="">—</td><td><span class="chip zero">0.0%</span></td><td>$1.78</td></tr>
+<tr class="clickable" onclick="goToProduct('[ALO] Sleep Capsules 825 mg * 60 cs')"><td style="font-size:12px;">[ALO] Sleep Capsules 825 mg * 60 cs</td><td style="font-size:12px;">Alo</td><td>1</td><td>0</td><td>—</td><td>—</td><td class="">—</td><td><span class="chip zero">0.0%</span></td><td>$5.08</td></tr>
+<tr class="clickable" onclick="goToProduct('[ALO] Superfood MVM Capsules 800mg*60cs')"><td style="font-size:12px;">[ALO] Superfood MVM Capsules 800mg*60cs</td><td style="font-size:12px;">Alo</td><td>1</td><td>0</td><td>—</td><td>—</td><td class="">—</td><td><span class="chip zero">0.0%</span></td><td>$6.58</td></tr>
+<tr class="clickable" onclick="goToProduct('[ExeGi] Visbiome Constipation_1g * 30 st')"><td style="font-size:12px;">[ExeGi] Visbiome Constipation_1g * 30 st</td><td style="font-size:12px;">ExegiPharma</td><td>2</td><td>0</td><td>—</td><td>—</td><td class="">—</td><td><span class="chip zero">0.0%</span></td><td>$3.04</td></tr>
+<tr class="clickable" onclick="goToProduct('[IM] HERS Jelly_20g*20sticks')"><td style="font-size:12px;">[IM] HERS Jelly_20g*20sticks</td><td style="font-size:12px;">Immunotec</td><td>3</td><td>0</td><td>—</td><td>—</td><td class="">—</td><td><span class="chip zero">0.0%</span></td><td>$3.21</td></tr>
+<tr class="clickable" onclick="goToProduct('[LL] Inner beauty DTM Powder Stick')"><td style="font-size:12px;">[LL] Inner beauty DTM Powder Stick</td><td style="font-size:12px;">Limelife USA</td><td>1</td><td>0</td><td>—</td><td>—</td><td class="">—</td><td><span class="chip zero">0.0%</span></td><td>$8.85</td></tr>
+<tr class="clickable" onclick="goToProduct('[MTEX] Omega3 +VitaminD3 HK_1.05g*60sfg')"><td style="font-size:12px;">[MTEX] Omega3 +VitaminD3 HK_1.05g*60sfg</td><td style="font-size:12px;">MANNATECH INC (U.S.A)</td><td>1</td><td>0</td><td>—</td><td>—</td><td class="">—</td><td><span class="chip zero">0.0%</span></td><td>$5.15</td></tr>
+<tr class="clickable" onclick="goToProduct('[MTEX] Omega3 +VitaminD3 MX_1.10g* 60sfg')"><td style="font-size:12px;">[MTEX] Omega3 +VitaminD3 MX_1.10g* 60sfg</td><td style="font-size:12px;">MANNATECH INC (U.S.A)</td><td>1</td><td>0</td><td>—</td><td>—</td><td class="">—</td><td><span class="chip zero">0.0%</span></td><td>$5.11</td></tr>
+<tr class="clickable" onclick="goToProduct('[MTEX] TruHealth Cleanse _3.4g*30stks')"><td style="font-size:12px;">[MTEX] TruHealth Cleanse _3.4g*30stks</td><td style="font-size:12px;">MANNATECH INC (U.S.A)</td><td>5</td><td>0</td><td>—</td><td>—</td><td class="">—</td><td><span class="chip zero">0.0%</span></td><td>$4.58</td></tr>
+<tr class="clickable" onclick="goToProduct('[YoungL] Green Omega 3 CA_665.8g*60ct')"><td style="font-size:12px;">[YoungL] Green Omega 3 CA_665.8g*60ct</td><td style="font-size:12px;">YOUNG LIVING ESSENTIAL OILS, LC</td><td>2</td><td>0</td><td>—</td><td>—</td><td class="">—</td><td><span class="chip zero">0.0%</span></td><td>$5.83</td></tr>
+<tr class="clickable" onclick="goToProduct('[YoungL] Green Omega 3 MX_665.8g*60ct')"><td style="font-size:12px;">[YoungL] Green Omega 3 MX_665.8g*60ct</td><td style="font-size:12px;">YOUNG LIVING ESSENTIAL OILS, LC</td><td>1</td><td>0</td><td>—</td><td>—</td><td class="">—</td><td><span class="chip zero">0.0%</span></td><td>$5.83</td></tr>
+<tr class="clickable" onclick="goToProduct('[YoungL] Green Omega 3 US_665.8g*60ct')"><td style="font-size:12px;">[YoungL] Green Omega 3 US_665.8g*60ct</td><td style="font-size:12px;">YOUNG LIVING ESSENTIAL OILS, LC</td><td>2</td><td>0</td><td>—</td><td>—</td><td class="">—</td><td><span class="chip zero">0.0%</span></td><td>$5.83</td></tr>
+<tr class="clickable" onclick="goToProduct('[doT] EO Mega_2.5g*90sfg_EUE')"><td style="font-size:12px;">[doT] EO Mega_2.5g*90sfg_EUE</td><td style="font-size:12px;">doTERRA</td><td>3</td><td>0</td><td>—</td><td>—</td><td class="">—</td><td><span class="chip zero">0.0%</span></td><td>$5.67</td></tr>
+<tr class="clickable" onclick="goToProduct('[doT] EO Mega_2.5g*90sfg_EUW')"><td style="font-size:12px;">[doT] EO Mega_2.5g*90sfg_EUW</td><td style="font-size:12px;">doTERRA</td><td>5</td><td>0</td><td>—</td><td>—</td><td class="">—</td><td><span class="chip zero">0.0%</span></td><td>$5.67</td></tr>
+<tr class="tot"><td>TOTAL</td><td>—</td><td>56</td><td>—</td><td>$2,402,295</td><td>$1,973,447</td><td class="pos">+$426,096</td><td><span class="chip pos">17.7%</span></td><td>—</td></tr>
+</tbody></table></div></div>
+</div>
+<div id="pane-monthly" class="pane">
+<div class="mo-filter">
+  <div><label>Month</label>
+    <select id="moSel" onchange="updateMonthly()">
+      <option value="0">Full Year (YTD)</option>
+      <option value="1">January</option><option value="2">February</option>
+      <option value="3" selected>March</option><option value="4">April</option>
+      <option value="5">May</option><option value="6">June</option>
+      <option value="7">July</option><option value="8">August</option>
+      <option value="9">September</option><option value="10">October</option>
+      <option value="11">November</option><option value="12">December</option>
+    </select>
+  </div>
+  <div style="color:rgba(255,255,255,.35);font-size:12px;">← Select month to filter all metrics</div>
+</div>
+<div class="mo-kpi-row">
+  <div class="mo-kpi"><div class="lbl">Total Sales</div><div class="val" id="mo-s" style="color:var(--blue)">—</div></div>
+  <div class="mo-kpi"><div class="lbl">Supply Amt</div><div class="val" id="mo-sp">—</div></div>
+  <div class="mo-kpi"><div class="lbl">Net Profit</div><div class="val" id="mo-p" style="color:var(--green)">—</div></div>
+  <div class="mo-kpi"><div class="lbl">Margin %</div><div class="val" id="mo-m">—</div></div>
+  <div class="mo-kpi"><div class="lbl"># PO Lines</div><div class="val" id="mo-l">—</div></div>
+  <div class="mo-grp"><div class="mo-grp-t">Incoterms</div><div class="mo-grp-r">
+    <div class="mo-grp-i"><div class="lbl">FOB</div><div class="val" id="mo-f">—</div></div>
+    <div class="mo-grp-i"><div class="lbl">DDP</div><div class="val" id="mo-d">—</div></div>
+  </div></div>
+  <div class="mo-grp"><div class="mo-grp-t">Transport</div><div class="mo-grp-r">
+    <div class="mo-grp-i"><div class="lbl">Air</div><div class="val" id="mo-a">—</div></div>
+    <div class="mo-grp-i"><div class="lbl">Ocean</div><div class="val" id="mo-o">—</div></div>
+  </div></div>
+</div>
+<div class="g2">
+  <div class="card">
+    <div class="sec">Customer Breakdown</div>
+    <div class="tbl"><table><thead><tr><th>Customer</th><th># Lines</th><th>Revenue</th><th>Supply</th><th>Net Profit</th><th>Margin</th><th>FOB</th><th>DDP</th><th>Air</th><th>Ocean</th></tr></thead><tbody id="mo-ctb"></tbody></table></div>
+  </div>
+  <div class="card">
+    <div class="sec">Revenue by Customer</div>
+    <div style="position:relative;height:250px;"><canvas id="moCustCh"></canvas></div>
+  </div>
+</div>
+<div class="card full">
+  <div class="sec">Product Detail — Revenue / Cost / Net Profit</div>
+  <div class="tbl"><table><thead><tr>
+    <th>Product</th><th>Revenue (AA)</th><th>Other Rev.</th><th style="color:var(--blue)">Total Rev.</th>
+    <th>G/R Amt</th><th>Freight</th><th>Customs</th><th>Sample</th><th>Total Cost</th>
+    <th style="color:var(--green)">Net Profit</th><th>Margin</th>
+  </tr></thead><tbody id="mo-dtb"></tbody></table></div>
+</div>
+<div class="g3">
+  <div class="card">
+    <div class="sec">Monthly Trend — Revenue vs Budget vs Pipeline</div>
+    <div style="position:relative;height:220px;"><canvas id="moTrCh"></canvas></div>
+    <div class="legend" id="moTrLeg"></div>
+  </div>
+  <div class="card">
+    <div class="sec">YTD Cumulative Forecast</div>
+    <div style="position:relative;height:220px;"><canvas id="moCumCh"></canvas></div>
+    <div class="legend" id="moCumLeg"></div>
+  </div>
+</div>
+</div>
+<div id="pane-customers" class="pane">
+<div class="g2r">
+<div class="card" style="padding:0;overflow:hidden;">
+  <div style="background:var(--sb);color:#fff;padding:13px 16px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;">Customer List</div>
+  <div id="custList">
+<div class="cust-item active" onclick="selectCustomer('doTERRA')" id="cust-0">
+  <div class="cust-name">doTERRA</div>
+  <div class="cust-meta">20 POs · Rev $1982K · <span class="chip pos" style="font-size:10px;padding:1px 6px;">18.9%</span></div>
+</div>
+<div class="cust-item " onclick="selectCustomer('Prose')" id="cust-1">
+  <div class="cust-name">Prose</div>
+  <div class="cust-meta">6 POs · Rev $188K · <span class="chip pos" style="font-size:10px;padding:1px 6px;">12.3%</span></div>
+</div>
+<div class="cust-item " onclick="selectCustomer('YOUNG LIVING ESSENTIAL OILS, LC')" id="cust-2">
+  <div class="cust-name">YOUNG LIVING ESSENTIAL OILS, LC</div>
+  <div class="cust-meta">9 POs · Rev $152K · <span class="chip pos" style="font-size:10px;padding:1px 6px;">23.3%</span></div>
+</div>
+<div class="cust-item " onclick="selectCustomer('MANNATECH INC (U.S.A)')" id="cust-3">
+  <div class="cust-name">MANNATECH INC (U.S.A)</div>
+  <div class="cust-meta">8 POs · Rev $60K · <span class="chip neg" style="font-size:10px;padding:1px 6px;">-11.0%</span></div>
+</div>
+<div class="cust-item " onclick="selectCustomer('SpoiledChild, Inc.')" id="cust-4">
+  <div class="cust-name">SpoiledChild, Inc.</div>
+  <div class="cust-meta">3 POs · Rev $20K · <span class="chip neg" style="font-size:10px;padding:1px 6px;">-0.8%</span></div>
+</div>
+<div class="cust-item " onclick="selectCustomer('Alo')" id="cust-5">
+  <div class="cust-name">Alo</div>
+  <div class="cust-meta">4 POs · Rev $0 · <span class="chip zero" style="font-size:10px;padding:1px 6px;">0.0%</span></div>
+</div>
+<div class="cust-item " onclick="selectCustomer('ExegiPharma')" id="cust-6">
+  <div class="cust-name">ExegiPharma</div>
+  <div class="cust-meta">2 POs · Rev $0 · <span class="chip zero" style="font-size:10px;padding:1px 6px;">0.0%</span></div>
+</div>
+<div class="cust-item " onclick="selectCustomer('Immunotec')" id="cust-7">
+  <div class="cust-name">Immunotec</div>
+  <div class="cust-meta">3 POs · Rev $0 · <span class="chip zero" style="font-size:10px;padding:1px 6px;">0.0%</span></div>
+</div>
+<div class="cust-item " onclick="selectCustomer('Limelife USA')" id="cust-8">
+  <div class="cust-name">Limelife USA</div>
+  <div class="cust-meta">1 POs · Rev $0 · <span class="chip zero" style="font-size:10px;padding:1px 6px;">0.0%</span></div>
+</div>
+</div></div>
+<div id="custDetail" class="card"></div></div>
+</div>
+<div id="pane-products" class="pane">
+<div class="prod-layout">
+<div class="prod-sidebar">
+<div class="prod-sidebar-title">Customers & Products</div>
+<div id="prodTree">
+<div class="cust-item" onclick="toggleCustProds(this,'doTERRA')" style="display:flex;justify-content:space-between;align-items:center;"><div><div class="cust-name">doTERRA</div><div class="cust-meta">3 product(s)</div></div><span style="color:var(--text2);font-size:12px;" id="arrow-0">▶</span></div>
+<div id="prods-doTERRA" style="display:none;">
+<div class="prod-item" onclick="selectProduct('[doT] EO Mega_2.5g*90sfg_US')" id="pi-doT_EO_Mega_2.5g*9"><span class="dot"></span><span class="prod-item-name">[doT] EO Mega_2.5g*90sfg_US</span></div>
+<div class="prod-item" onclick="selectProduct('[doT] EO Mega_2.5g*90sfg_EUE')" id="pi-doT_EO_Mega_2.5g*9"><span class="dot"></span><span class="prod-item-name">[doT] EO Mega_2.5g*90sfg_EUE</span></div>
+<div class="prod-item" onclick="selectProduct('[doT] EO Mega_2.5g*90sfg_EUW')" id="pi-doT_EO_Mega_2.5g*9"><span class="dot"></span><span class="prod-item-name">[doT] EO Mega_2.5g*90sfg_EUW</span></div>
+</div>
+<div class="cust-item" onclick="toggleCustProds(this,'Prose')" style="display:flex;justify-content:space-between;align-items:center;"><div><div class="cust-name">Prose</div><div class="cust-meta">1 product(s)</div></div><span style="color:var(--text2);font-size:12px;" id="arrow-1">▶</span></div>
+<div id="prods-Prose" style="display:none;">
+<div class="prod-item" onclick="selectProduct('[PRO] Keranat Oil Bulk_ 0.3g* 1000 sfg')" id="pi-PRO_Keranat_Oil_Bu"><span class="dot"></span><span class="prod-item-name">[PRO] Keranat Oil Bulk_ 0.3g* 1000 sfg</span></div>
+</div>
+<div class="cust-item" onclick="toggleCustProds(this,'YOUNG LIVING ESSENTIAL OILS, LC')" style="display:flex;justify-content:space-between;align-items:center;"><div><div class="cust-name">YOUNG LIVING ESSENTIAL OILS, LC</div><div class="cust-meta">5 product(s)</div></div><span style="color:var(--text2);font-size:12px;" id="arrow-2">▶</span></div>
+<div id="prods-YOUNG_LIVING_ESSENTIAL_OILS_LC" style="display:none;">
+<div class="prod-item" onclick="selectProduct('[YoungL] Green Omega 3 60ct UK')" id="pi-YoungL_Green_Omega"><span class="dot"></span><span class="prod-item-name">[YoungL] Green Omega 3 60ct UK</span></div>
+<div class="prod-item" onclick="selectProduct('[YoungL] Green Omega 3 60ct AT')" id="pi-YoungL_Green_Omega"><span class="dot"></span><span class="prod-item-name">[YoungL] Green Omega 3 60ct AT</span></div>
+<div class="prod-item" onclick="selectProduct('[YoungL] Green Omega 3 CA_665.8g*60ct')" id="pi-YoungL_Green_Omega"><span class="dot"></span><span class="prod-item-name">[YoungL] Green Omega 3 CA_665.8g*60ct</span></div>
+<div class="prod-item" onclick="selectProduct('[YoungL] Green Omega 3 MX_665.8g*60ct')" id="pi-YoungL_Green_Omega"><span class="dot"></span><span class="prod-item-name">[YoungL] Green Omega 3 MX_665.8g*60ct</span></div>
+<div class="prod-item" onclick="selectProduct('[YoungL] Green Omega 3 US_665.8g*60ct')" id="pi-YoungL_Green_Omega"><span class="dot"></span><span class="prod-item-name">[YoungL] Green Omega 3 US_665.8g*60ct</span></div>
+</div>
+<div class="cust-item" onclick="toggleCustProds(this,'MANNATECH INC (U.S.A)')" style="display:flex;justify-content:space-between;align-items:center;"><div><div class="cust-name">MANNATECH INC (U.S.A)</div><div class="cust-meta">4 product(s)</div></div><span style="color:var(--text2);font-size:12px;" id="arrow-3">▶</span></div>
+<div id="prods-MANNATECH_INC_(USA)" style="display:none;">
+<div class="prod-item" onclick="selectProduct('[MTEX] Omega3 +VitaminD3 US_1.05g* 60sfg')" id="pi-MTEX_Omega3_+Vitam"><span class="dot"></span><span class="prod-item-name">[MTEX] Omega3 +VitaminD3 US_1.05g* 60sfg</span></div>
+<div class="prod-item" onclick="selectProduct('[MTEX] Omega3 +VitaminD3 HK_1.05g*60sfg')" id="pi-MTEX_Omega3_+Vitam"><span class="dot"></span><span class="prod-item-name">[MTEX] Omega3 +VitaminD3 HK_1.05g*60sfg</span></div>
+<div class="prod-item" onclick="selectProduct('[MTEX] Omega3 +VitaminD3 MX_1.10g* 60sfg')" id="pi-MTEX_Omega3_+Vitam"><span class="dot"></span><span class="prod-item-name">[MTEX] Omega3 +VitaminD3 MX_1.10g* 60sfg</span></div>
+<div class="prod-item" onclick="selectProduct('[MTEX] TruHealth Cleanse _3.4g*30stks')" id="pi-MTEX_TruHealth_Cle"><span class="dot"></span><span class="prod-item-name">[MTEX] TruHealth Cleanse _3.4g*30stks</span></div>
+</div>
+<div class="cust-item" onclick="toggleCustProds(this,'SpoiledChild, Inc.')" style="display:flex;justify-content:space-between;align-items:center;"><div><div class="cust-name">SpoiledChild, Inc.</div><div class="cust-meta">3 product(s)</div></div><span style="color:var(--text2);font-size:12px;" id="arrow-4">▶</span></div>
+<div id="prods-SpoiledChild_Inc" style="display:none;">
+<div class="prod-item" onclick="selectProduct('[SC] Supergreens Pine Mint 390g Jar')" id="pi-SC_Supergreens_Pin"><span class="dot"></span><span class="prod-item-name">[SC] Supergreens Pine Mint 390g Jar</span></div>
+<div class="prod-item" onclick="selectProduct('[SC] Supergreens Pine 360g Jar')" id="pi-SC_Supergreens_Pin"><span class="dot"></span><span class="prod-item-name">[SC] Supergreens Pine 360g Jar</span></div>
+<div class="prod-item" onclick="selectProduct('[SC] Mushroom Coffee Powder Jar Pilot')" id="pi-SC_Mushroom_Coffee"><span class="dot"></span><span class="prod-item-name">[SC] Mushroom Coffee Powder Jar Pilot</span></div>
+</div>
+<div class="cust-item" onclick="toggleCustProds(this,'Alo')" style="display:flex;justify-content:space-between;align-items:center;"><div><div class="cust-name">Alo</div><div class="cust-meta">4 product(s)</div></div><span style="color:var(--text2);font-size:12px;" id="arrow-5">▶</span></div>
+<div id="prods-Alo" style="display:none;">
+<div class="prod-item" onclick="selectProduct('[ALO] Digest & Debloat 650 mg * 60 cs')" id="pi-ALO_Digest_&_Deblo"><span class="dot"></span><span class="prod-item-name">[ALO] Digest & Debloat 650 mg * 60 cs</span></div>
+<div class="prod-item" onclick="selectProduct('[ALO] Sleep Capsules 825 mg * 14 cs')" id="pi-ALO_Sleep_Capsules"><span class="dot"></span><span class="prod-item-name">[ALO] Sleep Capsules 825 mg * 14 cs</span></div>
+<div class="prod-item" onclick="selectProduct('[ALO] Sleep Capsules 825 mg * 60 cs')" id="pi-ALO_Sleep_Capsules"><span class="dot"></span><span class="prod-item-name">[ALO] Sleep Capsules 825 mg * 60 cs</span></div>
+<div class="prod-item" onclick="selectProduct('[ALO] Superfood MVM Capsules 800mg*60cs')" id="pi-ALO_Superfood_MVM_"><span class="dot"></span><span class="prod-item-name">[ALO] Superfood MVM Capsules 800mg*60cs</span></div>
+</div>
+<div class="cust-item" onclick="toggleCustProds(this,'ExegiPharma')" style="display:flex;justify-content:space-between;align-items:center;"><div><div class="cust-name">ExegiPharma</div><div class="cust-meta">1 product(s)</div></div><span style="color:var(--text2);font-size:12px;" id="arrow-6">▶</span></div>
+<div id="prods-ExegiPharma" style="display:none;">
+<div class="prod-item" onclick="selectProduct('[ExeGi] Visbiome Constipation_1g * 30 st')" id="pi-ExeGi_Visbiome_Con"><span class="dot"></span><span class="prod-item-name">[ExeGi] Visbiome Constipation_1g * 30 st</span></div>
+</div>
+<div class="cust-item" onclick="toggleCustProds(this,'Immunotec')" style="display:flex;justify-content:space-between;align-items:center;"><div><div class="cust-name">Immunotec</div><div class="cust-meta">1 product(s)</div></div><span style="color:var(--text2);font-size:12px;" id="arrow-7">▶</span></div>
+<div id="prods-Immunotec" style="display:none;">
+<div class="prod-item" onclick="selectProduct('[IM] HERS Jelly_20g*20sticks')" id="pi-IM_HERS_Jelly_20g*"><span class="dot"></span><span class="prod-item-name">[IM] HERS Jelly_20g*20sticks</span></div>
+</div>
+<div class="cust-item" onclick="toggleCustProds(this,'Limelife USA')" style="display:flex;justify-content:space-between;align-items:center;"><div><div class="cust-name">Limelife USA</div><div class="cust-meta">1 product(s)</div></div><span style="color:var(--text2);font-size:12px;" id="arrow-8">▶</span></div>
+<div id="prods-Limelife_USA" style="display:none;">
+<div class="prod-item" onclick="selectProduct('[LL] Inner beauty DTM Powder Stick')" id="pi-LL_Inner_beauty_DT"><span class="dot"></span><span class="prod-item-name">[LL] Inner beauty DTM Powder Stick</span></div>
+</div>
+</div></div>
+<div id="prodDetail" class="prod-detail"><div style="color:var(--text2);text-align:center;padding:60px 20px;font-size:14px;">← Select a product from the left to view details</div></div>
+</div></div>
+<div id="pane-logistics" class="pane">
+<div class="card full"><div class="sec">Logistics Status — All PO Lines</div><div class="tbl"><table>
+<thead><tr><th>Row</th><th>Customer</th><th>Product</th><th>Closing</th><th>Status</th><th>Qty</th><th>Incoterms</th><th>Transport</th><th>Receipt Date</th><th>Req. Delivery</th><th>In Transit Date</th><th>Scheduled Date</th><th>Revenue</th></tr></thead><tbody>
+<tr><td style='color:var(--text2)'>2</td><td>SpoiledChild, Inc.</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[SC] Mushroom Coffee Powder Jar Pilot</td><td>Yes</td><td><span class="status-chip status-yes">✓ Completed</span></td><td>118</td><td>DDP</td><td>Air</td><td>2026-01-05</td><td>2026-01-02</td><td></td><td></td><td>$6,686</td></tr>
+<tr><td style='color:var(--text2)'>3</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_US</td><td>Yes</td><td><span class="status-chip status-yes">✓ Completed</span></td><td>45,216</td><td>FOB</td><td>Ocean</td><td>2026-01-04</td><td>2026-01-05</td><td></td><td></td><td>$313,347</td></tr>
+<tr><td style='color:var(--text2)'>4</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_US</td><td>Yes</td><td><span class="status-chip status-yes">✓ Completed</span></td><td>35,316</td><td>FOB</td><td>Ocean</td><td>2026-01-04</td><td>2026-01-05</td><td></td><td></td><td>$244,740</td></tr>
+<tr><td style='color:var(--text2)'>5</td><td>MANNATECH INC (U.S.A)</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[MTEX] Omega3 +VitaminD3 US_1.05g* 60sfg</td><td>Yes</td><td><span class="status-chip status-yes">✓ Completed</span></td><td>8,066</td><td>DDP</td><td>Ocean</td><td>2026-01-14</td><td>2026-01-05</td><td></td><td></td><td>$59,922</td></tr>
+<tr><td style='color:var(--text2)'>6</td><td>SpoiledChild, Inc.</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[SC] Supergreens Pine 360g Jar</td><td>Yes</td><td><span class="status-chip status-yes">✓ Completed</span></td><td>210</td><td>DDP</td><td>Air</td><td>2026-01-20</td><td>2026-01-05</td><td></td><td></td><td>$6,740</td></tr>
+<tr><td style='color:var(--text2)'>7</td><td>SpoiledChild, Inc.</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[SC] Supergreens Pine Mint 390g Jar</td><td>Yes</td><td><span class="status-chip status-yes">✓ Completed</span></td><td>211</td><td>DDP</td><td>Air</td><td>2026-01-20</td><td>2026-01-05</td><td></td><td></td><td>$6,760</td></tr>
+<tr><td style='color:var(--text2)'>8</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_US</td><td>Yes</td><td><span class="status-chip status-yes">✓ Completed</span></td><td>45,012</td><td>FOB</td><td>Ocean</td><td>2026-01-16</td><td>2026-01-29</td><td></td><td></td><td>$311,933</td></tr>
+<tr><td style='color:var(--text2)'>9</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_US</td><td>Yes</td><td><span class="status-chip status-yes">✓ Completed</span></td><td>45,036</td><td>FOB</td><td>Ocean</td><td>2026-01-28</td><td>2026-01-29</td><td></td><td></td><td>$312,099</td></tr>
+<tr><td style='color:var(--text2)'>10</td><td>Prose</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[PRO] Keranat Oil Bulk_ 0.3g* 1000 sfg</td><td>Yes</td><td><span class="status-chip status-yes">✓ Completed</span></td><td>1,696</td><td>DDP</td><td>Air</td><td>2026-02-02</td><td>2026-02-06</td><td></td><td></td><td>$132,595</td></tr>
+<tr><td style='color:var(--text2)'>11</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_US</td><td>Yes</td><td><span class="status-chip status-yes">✓ Completed</span></td><td>45,000</td><td>FOB</td><td>Ocean</td><td>2026-02-15</td><td>2026-02-09</td><td></td><td></td><td>$311,850</td></tr>
+<tr><td style='color:var(--text2)'>12</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_US</td><td>Yes</td><td><span class="status-chip status-yes">✓ Completed</span></td><td>25,116</td><td>FOB</td><td>Ocean</td><td>2026-02-15</td><td>2026-02-11</td><td></td><td></td><td>$174,054</td></tr>
+<tr><td style='color:var(--text2)'>13</td><td>YOUNG LIVING ESSENTIAL OILS, LC</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[YoungL] Green Omega 3 60ct AT</td><td>Yes</td><td><span class="status-chip status-yes">✓ Completed</span></td><td>3,200</td><td>FOB</td><td>Air</td><td>2026-02-13</td><td>2026-02-17</td><td></td><td></td><td>$24,320</td></tr>
+<tr><td style='color:var(--text2)'>14</td><td>YOUNG LIVING ESSENTIAL OILS, LC</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[YoungL] Green Omega 3 60ct AT</td><td>Yes</td><td><span class="status-chip status-yes">✓ Completed</span></td><td>6,800</td><td>FOB</td><td>Ocean</td><td>2026-03-12</td><td>2026-03-08</td><td></td><td></td><td>$51,680</td></tr>
+<tr><td style='color:var(--text2)'>15</td><td>YOUNG LIVING ESSENTIAL OILS, LC</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[YoungL] Green Omega 3 60ct UK</td><td>Yes</td><td><span class="status-chip status-yes">✓ Completed</span></td><td>10,062</td><td>FOB</td><td>Ocean</td><td>2026-03-12</td><td>2026-03-08</td><td></td><td></td><td>$76,471</td></tr>
+<tr><td style='color:var(--text2)'>16</td><td>Prose</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[PRO] Keranat Oil Bulk_ 0.3g* 1000 sfg</td><td>Yes</td><td><span class="status-chip status-yes">✓ Completed</span></td><td>672</td><td>DDP</td><td>Air</td><td>2026-03-16</td><td>2026-03-15</td><td></td><td></td><td>$55,124</td></tr>
+<tr><td style='color:var(--text2)'>17</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_US</td><td>Yes</td><td><span class="status-chip status-yes">✓ Completed</span></td><td>44,982</td><td>FOB</td><td>Ocean</td><td>2026-03-21</td><td>2026-03-30</td><td></td><td></td><td>$313,974</td></tr>
+<tr><td style='color:var(--text2)'>18</td><td>Prose</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[PRO] Keranat Oil Bulk_ 0.3g* 1000 sfg</td><td>No</td><td><span class="status-chip status-transit">🚢 In Transit</span></td><td>1,642</td><td>DDP</td><td>Ocean</td><td></td><td>2026-04-01</td><td>2026-03-22</td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>19</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_US</td><td>No</td><td><span class="status-chip status-sched">📅 Scheduled</span></td><td>45,419</td><td>FOB</td><td>Ocean</td><td></td><td>2026-04-06</td><td></td><td>2026-04-14</td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>20</td><td>MANNATECH INC (U.S.A)</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[MTEX] Omega3 +VitaminD3 MX_1.10g* 60sfg</td><td>No</td><td><span class="status-chip status-sched">📅 Scheduled</span></td><td>9,951</td><td>FOB</td><td>Ocean</td><td></td><td>2026-04-13</td><td></td><td>2026-04-17</td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>21</td><td>Limelife USA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[LL] Inner beauty DTM Powder Stick</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>30,000</td><td>FOB</td><td></td><td></td><td>2026-04-15</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>22</td><td>Prose</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[PRO] Keranat Oil Bulk_ 0.3g* 1000 sfg</td><td>No</td><td><span class="status-chip status-sched">📅 Scheduled</span></td><td>1,008</td><td>DDP</td><td>Ocean</td><td></td><td>2026-05-05</td><td></td><td>2026-04-20</td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>23</td><td>YOUNG LIVING ESSENTIAL OILS, LC</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[YoungL] Green Omega 3 US_665.8g*60ct</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>16,500</td><td>FOB</td><td></td><td></td><td>2026-05-05</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>24</td><td>YOUNG LIVING ESSENTIAL OILS, LC</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[YoungL] Green Omega 3 CA_665.8g*60ct</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>3,500</td><td>FOB</td><td></td><td></td><td>2026-05-05</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>25</td><td>Alo</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[ALO] Sleep Capsules 825 mg * 60 cs</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>5,650</td><td>FOB</td><td></td><td></td><td>2026-05-10</td><td></td><td></td><td>$709</td></tr>
+<tr><td style='color:var(--text2)'>26</td><td>Alo</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[ALO] Sleep Capsules 825 mg * 14 cs</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>1,500</td><td>FOB</td><td></td><td></td><td>2026-05-10</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>27</td><td>Alo</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[ALO] Superfood MVM Capsules 800mg*60cs</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>6,000</td><td>FOB</td><td></td><td></td><td>2026-05-10</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>28</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_US</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>45,000</td><td>FOB</td><td></td><td></td><td>2026-05-18</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>29</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_EUE</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>30,000</td><td>FOB</td><td></td><td></td><td>2026-05-19</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>30</td><td>ExegiPharma</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[ExeGi] Visbiome Constipation_1g * 30 st</td><td>No</td><td><span class="status-chip status-sched">📅 Scheduled</span></td><td>2,688</td><td>DDP</td><td>Air</td><td></td><td>2026-05-19</td><td></td><td>2026-04-15</td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>31</td><td>ExegiPharma</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[ExeGi] Visbiome Constipation_1g * 30 st</td><td>No</td><td><span class="status-chip status-sched">📅 Scheduled</span></td><td>12,048</td><td>DDP</td><td>Ocean</td><td></td><td>2026-05-19</td><td></td><td>2026-04-18</td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>32</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_US</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>45,000</td><td>FOB</td><td></td><td></td><td>2026-05-25</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>33</td><td>MANNATECH INC (U.S.A)</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[MTEX] Omega3 +VitaminD3 HK_1.05g*60sfg</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>20,000</td><td>FOB</td><td></td><td></td><td>2026-05-25</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>34</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_EUW</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>45,000</td><td>FOB</td><td></td><td></td><td>2026-05-27</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>35</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_US</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>40,000</td><td>FOB</td><td></td><td></td><td>2026-06-01</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>36</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_EUW</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>15,000</td><td>FOB</td><td></td><td></td><td>2026-06-02</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>37</td><td>MANNATECH INC (U.S.A)</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[MTEX] TruHealth Cleanse _3.4g*30stks</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>3,250</td><td>DDP</td><td></td><td></td><td>2026-06-08</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>38</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_US</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>40,000</td><td>FOB</td><td></td><td></td><td>2026-06-12</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>39</td><td>Prose</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[PRO] Keranat Oil Bulk_ 0.3g* 1000 sfg</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>1,680</td><td>DDP</td><td></td><td></td><td>2026-06-15</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>40</td><td>MANNATECH INC (U.S.A)</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[MTEX] TruHealth Cleanse _3.4g*30stks</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>2,000</td><td>FOB</td><td></td><td></td><td>2026-06-15</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>41</td><td>MANNATECH INC (U.S.A)</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[MTEX] TruHealth Cleanse _3.4g*30stks</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>500</td><td>FOB</td><td></td><td></td><td>2026-06-15</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>42</td><td>MANNATECH INC (U.S.A)</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[MTEX] TruHealth Cleanse _3.4g*30stks</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>500</td><td>FOB</td><td></td><td></td><td>2026-06-15</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>43</td><td>MANNATECH INC (U.S.A)</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[MTEX] TruHealth Cleanse _3.4g*30stks</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>250</td><td>FOB</td><td></td><td></td><td>2026-06-15</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>44</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_EUW</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>32,000</td><td>FOB</td><td></td><td></td><td>2026-07-07</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>45</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_EUE</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>8,000</td><td>FOB</td><td></td><td></td><td>2026-07-07</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>46</td><td>YOUNG LIVING ESSENTIAL OILS, LC</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[YoungL] Green Omega 3 US_665.8g*60ct</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>16,000</td><td>FOB</td><td></td><td></td><td>2026-07-10</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>47</td><td>YOUNG LIVING ESSENTIAL OILS, LC</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[YoungL] Green Omega 3 60ct AT</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>2,000</td><td>FOB</td><td></td><td></td><td>2026-07-10</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>48</td><td>YOUNG LIVING ESSENTIAL OILS, LC</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[YoungL] Green Omega 3 CA_665.8g*60ct</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>1,000</td><td>FOB</td><td></td><td></td><td>2026-07-10</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>49</td><td>YOUNG LIVING ESSENTIAL OILS, LC</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[YoungL] Green Omega 3 MX_665.8g*60ct</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>1,000</td><td>FOB</td><td></td><td></td><td>2026-07-10</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>50</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_EUW</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>40,000</td><td>FOB</td><td></td><td></td><td>2026-07-15</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>51</td><td>Prose</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[PRO] Keranat Oil Bulk_ 0.3g* 1000 sfg</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>1,800</td><td>DDP</td><td></td><td></td><td>2026-07-27</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>52</td><td>Immunotec</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[IM] HERS Jelly_20g*20sticks</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>16,000</td><td>FOB</td><td></td><td></td><td>2026-08-10</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>53</td><td>Immunotec</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[IM] HERS Jelly_20g*20sticks</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>11,500</td><td>FOB</td><td></td><td></td><td>2026-08-10</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>54</td><td>Immunotec</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[IM] HERS Jelly_20g*20sticks</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>8,000</td><td>FOB</td><td></td><td></td><td>2026-08-10</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>55</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_EUW</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>30,000</td><td>FOB</td><td></td><td></td><td>2026-08-29</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>56</td><td>doTERRA</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[doT] EO Mega_2.5g*90sfg_EUE</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>10,000</td><td>FOB</td><td></td><td></td><td>2026-08-29</td><td></td><td></td><td>—</td></tr>
+<tr><td style='color:var(--text2)'>57</td><td>Alo</td><td style='font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>[ALO] Digest & Debloat 650 mg * 60 cs</td><td>No</td><td><span class="status-chip status-pend">⏳ Pending</span></td><td>6,000</td><td>FOB</td><td></td><td></td><td>2026-06-29</td><td></td><td></td><td>—</td></tr>
+</tbody></table></div></div>
+</div>
+</div></div>
+<script>
+Chart.defaults.font.family="'Inter',sans-serif";
+Chart.defaults.color='#6b7280';
+
+const ROWS=[{"r": 2, "closing": "Yes", "product": "[SC] Mushroom Coffee Powder Jar Pilot", "customer": "SpoiledChild, Inc.", "incoterms": "DDP", "transport": "Air", "qty": 118, "unitPrice": 38.49, "receiptDate": "2026-01-05", "reqDelivery": "2026-01-02", "inTransit": "", "scheduled": "", "aa": 6097, "ab": 589, "ac": 4542, "ad": 1691, "ae": 715, "az": 0, "revenue": 6686, "cost": 6948, "netProfit": -262, "margin": -3.9, "supplyAmt": 4542, "poQty": 118, "orderVal": 6097}, {"r": 3, "closing": "Yes", "product": "[doT] EO Mega_2.5g*90sfg_US", "customer": "doTERRA", "incoterms": "FOB", "transport": "Ocean", "qty": 45216, "unitPrice": 5.62, "receiptDate": "2026-01-04", "reqDelivery": "2026-01-05", "inTransit": "", "scheduled": "", "aa": 313347, "ab": 0, "ac": 254114, "ad": 0, "ae": 0, "az": 0, "revenue": 313347, "cost": 254114, "netProfit": 59233, "margin": 18.9, "supplyAmt": 254114, "poQty": 45216, "orderVal": 313347}, {"r": 4, "closing": "Yes", "product": "[doT] EO Mega_2.5g*90sfg_US", "customer": "doTERRA", "incoterms": "FOB", "transport": "Ocean", "qty": 35316, "unitPrice": 5.62, "receiptDate": "2026-01-04", "reqDelivery": "2026-01-05", "inTransit": "", "scheduled": "", "aa": 244740, "ab": 0, "ac": 198476, "ad": 0, "ae": 0, "az": 0, "revenue": 244740, "cost": 198476, "netProfit": 46264, "margin": 18.9, "supplyAmt": 198476, "poQty": 35316, "orderVal": 244740}, {"r": 5, "closing": "Yes", "product": "[MTEX] Omega3 +VitaminD3 US_1.05g* 60sfg", "customer": "MANNATECH INC (U.S.A)", "incoterms": "DDP", "transport": "Ocean", "qty": 8066, "unitPrice": 6.13, "receiptDate": "2026-01-14", "reqDelivery": "2026-01-05", "inTransit": "", "scheduled": "", "aa": 52106, "ab": 7816, "ac": 49445, "ad": 9605, "ae": 7479, "az": 0, "revenue": 59922, "cost": 66528, "netProfit": -6606, "margin": -11.0, "supplyAmt": 49445, "poQty": 8066, "orderVal": 52106}, {"r": 6, "closing": "Yes", "product": "[SC] Supergreens Pine 360g Jar", "customer": "SpoiledChild, Inc.", "incoterms": "DDP", "transport": "Air", "qty": 210, "unitPrice": 19.9, "receiptDate": "2026-01-20", "reqDelivery": "2026-01-05", "inTransit": "", "scheduled": "", "aa": 4179, "ab": 2561, "ac": 4179, "ad": 1879, "ae": 628, "az": 0, "revenue": 6740, "cost": 6686, "netProfit": 54, "margin": 0.8, "supplyAmt": 4179, "poQty": 210, "orderVal": 4179}, {"r": 7, "closing": "Yes", "product": "[SC] Supergreens Pine Mint 390g Jar", "customer": "SpoiledChild, Inc.", "incoterms": "DDP", "transport": "Air", "qty": 211, "unitPrice": 19.9, "receiptDate": "2026-01-20", "reqDelivery": "2026-01-05", "inTransit": "", "scheduled": "", "aa": 4199, "ab": 2561, "ac": 4199, "ad": 1879, "ae": 628, "az": 0, "revenue": 6760, "cost": 6706, "netProfit": 54, "margin": 0.8, "supplyAmt": 4199, "poQty": 211, "orderVal": 4199}, {"r": 8, "closing": "Yes", "product": "[doT] EO Mega_2.5g*90sfg_US", "customer": "doTERRA", "incoterms": "FOB", "transport": "Ocean", "qty": 45012, "unitPrice": 5.62, "receiptDate": "2026-01-16", "reqDelivery": "2026-01-29", "inTransit": "", "scheduled": "", "aa": 311933, "ab": 0, "ac": 252967, "ad": 0, "ae": 0, "az": 0, "revenue": 311933, "cost": 252967, "netProfit": 58966, "margin": 18.9, "supplyAmt": 252967, "poQty": 45012, "orderVal": 311933}, {"r": 9, "closing": "Yes", "product": "[doT] EO Mega_2.5g*90sfg_US", "customer": "doTERRA", "incoterms": "FOB", "transport": "Ocean", "qty": 45036, "unitPrice": 5.62, "receiptDate": "2026-01-28", "reqDelivery": "2026-01-29", "inTransit": "", "scheduled": "", "aa": 312099, "ab": 0, "ac": 253102, "ad": 0, "ae": 0, "az": 0, "revenue": 312099, "cost": 253102, "netProfit": 58997, "margin": 18.9, "supplyAmt": 253102, "poQty": 45036, "orderVal": 312099}, {"r": 10, "closing": "Yes", "product": "[PRO] Keranat Oil Bulk_ 0.3g* 1000 sfg", "customer": "Prose", "incoterms": "DDP", "transport": "Air", "qty": 1696, "unitPrice": 41.34, "receiptDate": "2026-02-02", "reqDelivery": "2026-02-06", "inTransit": "", "scheduled": "", "aa": 93500, "ab": 39095, "ac": 70113, "ad": 36156, "ae": 10659, "az": 0, "revenue": 132595, "cost": 116928, "netProfit": 12915, "margin": 9.7, "supplyAmt": 70113, "poQty": 1696, "orderVal": 93500}, {"r": 11, "closing": "Yes", "product": "[doT] EO Mega_2.5g*90sfg_US", "customer": "doTERRA", "incoterms": "FOB", "transport": "Ocean", "qty": 45000, "unitPrice": 5.62, "receiptDate": "2026-02-15", "reqDelivery": "2026-02-09", "inTransit": "", "scheduled": "", "aa": 311850, "ab": 0, "ac": 252900, "ad": 0, "ae": 0, "az": 0, "revenue": 311850, "cost": 252900, "netProfit": 58950, "margin": 18.9, "supplyAmt": 252900, "poQty": 45000, "orderVal": 311850}, {"r": 12, "closing": "Yes", "product": "[doT] EO Mega_2.5g*90sfg_US", "customer": "doTERRA", "incoterms": "FOB", "transport": "Ocean", "qty": 25116, "unitPrice": 5.62, "receiptDate": "2026-02-15", "reqDelivery": "2026-02-11", "inTransit": "", "scheduled": "", "aa": 174054, "ab": 0, "ac": 141152, "ad": 0, "ae": 0, "az": 0, "revenue": 174054, "cost": 141152, "netProfit": 32902, "margin": 18.9, "supplyAmt": 141152, "poQty": 25116, "orderVal": 174054}, {"r": 13, "closing": "Yes", "product": "[YoungL] Green Omega 3 60ct AT", "customer": "YOUNG LIVING ESSENTIAL OILS, LC", "incoterms": "FOB", "transport": "Air", "qty": 3200, "unitPrice": 5.83, "receiptDate": "2026-02-13", "reqDelivery": "2026-02-17", "inTransit": "", "scheduled": "", "aa": 24320, "ab": 0, "ac": 18656, "ad": 0, "ae": 0, "az": 0, "revenue": 24320, "cost": 18656, "netProfit": 5664, "margin": 23.3, "supplyAmt": 18656, "poQty": 3200, "orderVal": 24320}, {"r": 14, "closing": "Yes", "product": "[YoungL] Green Omega 3 60ct AT", "customer": "YOUNG LIVING ESSENTIAL OILS, LC", "incoterms": "FOB", "transport": "Ocean", "qty": 6800, "unitPrice": 5.83, "receiptDate": "2026-03-12", "reqDelivery": "2026-03-08", "inTransit": "", "scheduled": "", "aa": 51680, "ab": 0, "ac": 39644, "ad": 0, "ae": 0, "az": 0, "revenue": 51680, "cost": 39644, "netProfit": 12036, "margin": 23.3, "supplyAmt": 39644, "poQty": 6800, "orderVal": 51680}, {"r": 15, "closing": "Yes", "product": "[YoungL] Green Omega 3 60ct UK", "customer": "YOUNG LIVING ESSENTIAL OILS, LC", "incoterms": "FOB", "transport": "Ocean", "qty": 10062, "unitPrice": 5.83, "receiptDate": "2026-03-12", "reqDelivery": "2026-03-08", "inTransit": "", "scheduled": "", "aa": 76471, "ab": 0, "ac": 58661, "ad": 0, "ae": 0, "az": 0, "revenue": 76471, "cost": 58661, "netProfit": 17810, "margin": 23.3, "supplyAmt": 58661, "poQty": 10062, "orderVal": 76471}, {"r": 16, "closing": "Yes", "product": "[PRO] Keranat Oil Bulk_ 0.3g* 1000 sfg", "customer": "Prose", "incoterms": "DDP", "transport": "Air", "qty": 672, "unitPrice": 41.34, "receiptDate": "2026-03-16", "reqDelivery": "2026-03-15", "inTransit": "", "scheduled": "", "aa": 37047, "ab": 18076, "ac": 27780, "ad": 14372, "ae": 2778, "az": 0, "revenue": 55124, "cost": 44931, "netProfit": 10193, "margin": 18.5, "supplyAmt": 27780, "poQty": 672, "orderVal": 37047}, {"r": 17, "closing": "Yes", "product": "[doT] EO Mega_2.5g*90sfg_US", "customer": "doTERRA", "incoterms": "FOB", "transport": "Ocean", "qty": 44982, "unitPrice": 5.67, "receiptDate": "2026-03-21", "reqDelivery": "2026-03-30", "inTransit": "", "scheduled": "", "aa": 313974, "ab": 0, "ac": 255048, "ad": 0, "ae": 0, "az": 0, "revenue": 313974, "cost": 255048, "netProfit": 58926, "margin": 18.8, "supplyAmt": 255048, "poQty": 44982, "orderVal": 313974}, {"r": 18, "closing": "No", "product": "[PRO] Keranat Oil Bulk_ 0.3g* 1000 sfg", "customer": "Prose", "incoterms": "DDP", "transport": "Ocean", "qty": 1642, "unitPrice": 41.34, "receiptDate": "", "reqDelivery": "2026-04-01", "inTransit": "2026-03-22", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 67880, "poQty": 1642, "orderVal": 90523}, {"r": 19, "closing": "No", "product": "[doT] EO Mega_2.5g*90sfg_US", "customer": "doTERRA", "incoterms": "FOB", "transport": "Ocean", "qty": 45419, "unitPrice": 5.67, "receiptDate": "", "reqDelivery": "2026-04-06", "inTransit": "", "scheduled": "2026-04-14", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 257526, "poQty": 45419, "orderVal": 317025}, {"r": 20, "closing": "No", "product": "[MTEX] Omega3 +VitaminD3 MX_1.10g* 60sfg", "customer": "MANNATECH INC (U.S.A)", "incoterms": "FOB", "transport": "Ocean", "qty": 9951, "unitPrice": 5.11, "receiptDate": "", "reqDelivery": "2026-04-13", "inTransit": "", "scheduled": "2026-04-17", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 50850, "poQty": 9951, "orderVal": 65179}, {"r": 21, "closing": "No", "product": "[LL] Inner beauty DTM Powder Stick", "customer": "Limelife USA", "incoterms": "FOB", "transport": "", "qty": 30000, "unitPrice": 8.85, "receiptDate": "", "reqDelivery": "2026-04-15", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 265500, "poQty": 30000, "orderVal": 354000}, {"r": 22, "closing": "No", "product": "[PRO] Keranat Oil Bulk_ 0.3g* 1000 sfg", "customer": "Prose", "incoterms": "DDP", "transport": "Ocean", "qty": 1008, "unitPrice": 41.34, "receiptDate": "", "reqDelivery": "2026-05-05", "inTransit": "", "scheduled": "2026-04-20", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 41671, "poQty": 1008, "orderVal": 59422}, {"r": 23, "closing": "No", "product": "[YoungL] Green Omega 3 US_665.8g*60ct", "customer": "YOUNG LIVING ESSENTIAL OILS, LC", "incoterms": "FOB", "transport": "", "qty": 16500, "unitPrice": 5.83, "receiptDate": "", "reqDelivery": "2026-05-05", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 96195, "poQty": 16500, "orderVal": 125400}, {"r": 24, "closing": "No", "product": "[YoungL] Green Omega 3 CA_665.8g*60ct", "customer": "YOUNG LIVING ESSENTIAL OILS, LC", "incoterms": "FOB", "transport": "", "qty": 3500, "unitPrice": 5.83, "receiptDate": "", "reqDelivery": "2026-05-05", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 20405, "poQty": 3500, "orderVal": 26600}, {"r": 25, "closing": "No", "product": "[ALO] Sleep Capsules 825 mg * 60 cs", "customer": "Alo", "incoterms": "FOB", "transport": "", "qty": 5650, "unitPrice": 5.08, "receiptDate": "", "reqDelivery": "2026-05-10", "inTransit": "", "scheduled": "", "aa": 0, "ab": 709, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 709, "cost": 0, "netProfit": 0, "margin": 0.0, "supplyAmt": 28702, "poQty": 5650, "orderVal": 38307}, {"r": 26, "closing": "No", "product": "[ALO] Sleep Capsules 825 mg * 14 cs", "customer": "Alo", "incoterms": "FOB", "transport": "", "qty": 1500, "unitPrice": 1.78, "receiptDate": "", "reqDelivery": "2026-05-10", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 2670, "poQty": 1500, "orderVal": 3570}, {"r": 27, "closing": "No", "product": "[ALO] Superfood MVM Capsules 800mg*60cs", "customer": "Alo", "incoterms": "FOB", "transport": "", "qty": 6000, "unitPrice": 6.58, "receiptDate": "", "reqDelivery": "2026-05-10", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 39480, "poQty": 6000, "orderVal": 52680}, {"r": 28, "closing": "No", "product": "[doT] EO Mega_2.5g*90sfg_US", "customer": "doTERRA", "incoterms": "FOB", "transport": "", "qty": 45000, "unitPrice": 5.67, "receiptDate": "", "reqDelivery": "2026-05-18", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 255150, "poQty": 45000, "orderVal": 314100}, {"r": 29, "closing": "No", "product": "[doT] EO Mega_2.5g*90sfg_EUE", "customer": "doTERRA", "incoterms": "FOB", "transport": "", "qty": 30000, "unitPrice": 5.67, "receiptDate": "", "reqDelivery": "2026-05-19", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 170100, "poQty": 30000, "orderVal": 209400}, {"r": 30, "closing": "No", "product": "[ExeGi] Visbiome Constipation_1g * 30 st", "customer": "ExegiPharma", "incoterms": "DDP", "transport": "Air", "qty": 2688, "unitPrice": 3.04, "receiptDate": "", "reqDelivery": "2026-05-19", "inTransit": "", "scheduled": "2026-04-15", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 9193, "poQty": 2688, "orderVal": 14461}, {"r": 31, "closing": "No", "product": "[ExeGi] Visbiome Constipation_1g * 30 st", "customer": "ExegiPharma", "incoterms": "DDP", "transport": "Ocean", "qty": 12048, "unitPrice": 3.04, "receiptDate": "", "reqDelivery": "2026-05-19", "inTransit": "", "scheduled": "2026-04-18", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 35604, "poQty": 12048, "orderVal": 64818}, {"r": 32, "closing": "No", "product": "[doT] EO Mega_2.5g*90sfg_US", "customer": "doTERRA", "incoterms": "FOB", "transport": "", "qty": 45000, "unitPrice": 5.67, "receiptDate": "", "reqDelivery": "2026-05-25", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 255150, "poQty": 45000, "orderVal": 314100}, {"r": 33, "closing": "No", "product": "[MTEX] Omega3 +VitaminD3 HK_1.05g*60sfg", "customer": "MANNATECH INC (U.S.A)", "incoterms": "FOB", "transport": "", "qty": 20000, "unitPrice": 5.15, "receiptDate": "", "reqDelivery": "2026-05-25", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 103000, "poQty": 20000, "orderVal": 128000}, {"r": 34, "closing": "No", "product": "[doT] EO Mega_2.5g*90sfg_EUW", "customer": "doTERRA", "incoterms": "FOB", "transport": "", "qty": 45000, "unitPrice": 5.67, "receiptDate": "", "reqDelivery": "2026-05-27", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 255150, "poQty": 45000, "orderVal": 314100}, {"r": 35, "closing": "No", "product": "[doT] EO Mega_2.5g*90sfg_US", "customer": "doTERRA", "incoterms": "FOB", "transport": "", "qty": 40000, "unitPrice": 5.67, "receiptDate": "", "reqDelivery": "2026-06-01", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 226800, "poQty": 40000, "orderVal": 279200}, {"r": 36, "closing": "No", "product": "[doT] EO Mega_2.5g*90sfg_EUW", "customer": "doTERRA", "incoterms": "FOB", "transport": "", "qty": 15000, "unitPrice": 5.67, "receiptDate": "", "reqDelivery": "2026-06-02", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 85050, "poQty": 15000, "orderVal": 104700}, {"r": 37, "closing": "No", "product": "[MTEX] TruHealth Cleanse _3.4g*30stks", "customer": "MANNATECH INC (U.S.A)", "incoterms": "DDP", "transport": "", "qty": 3250, "unitPrice": 4.58, "receiptDate": "", "reqDelivery": "2026-06-08", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 14885, "poQty": 3250, "orderVal": 27072}, {"r": 38, "closing": "No", "product": "[doT] EO Mega_2.5g*90sfg_US", "customer": "doTERRA", "incoterms": "FOB", "transport": "", "qty": 40000, "unitPrice": 5.67, "receiptDate": "", "reqDelivery": "2026-06-12", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 226800, "poQty": 40000, "orderVal": 279200}, {"r": 39, "closing": "No", "product": "[PRO] Keranat Oil Bulk_ 0.3g* 1000 sfg", "customer": "Prose", "incoterms": "DDP", "transport": "", "qty": 1680, "unitPrice": 41.34, "receiptDate": "", "reqDelivery": "2026-06-15", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 69451, "poQty": 1680, "orderVal": 92618}, {"r": 40, "closing": "No", "product": "[MTEX] TruHealth Cleanse _3.4g*30stks", "customer": "MANNATECH INC (U.S.A)", "incoterms": "FOB", "transport": "", "qty": 2000, "unitPrice": 4.58, "receiptDate": "", "reqDelivery": "2026-06-15", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 9160, "poQty": 2000, "orderVal": 12200}, {"r": 41, "closing": "No", "product": "[MTEX] TruHealth Cleanse _3.4g*30stks", "customer": "MANNATECH INC (U.S.A)", "incoterms": "FOB", "transport": "", "qty": 500, "unitPrice": 4.58, "receiptDate": "", "reqDelivery": "2026-06-15", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 2290, "poQty": 500, "orderVal": 3050}, {"r": 42, "closing": "No", "product": "[MTEX] TruHealth Cleanse _3.4g*30stks", "customer": "MANNATECH INC (U.S.A)", "incoterms": "FOB", "transport": "", "qty": 500, "unitPrice": 4.58, "receiptDate": "", "reqDelivery": "2026-06-15", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 2290, "poQty": 500, "orderVal": 3050}, {"r": 43, "closing": "No", "product": "[MTEX] TruHealth Cleanse _3.4g*30stks", "customer": "MANNATECH INC (U.S.A)", "incoterms": "FOB", "transport": "", "qty": 250, "unitPrice": 4.58, "receiptDate": "", "reqDelivery": "2026-06-15", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 1145, "poQty": 250, "orderVal": 1525}, {"r": 44, "closing": "No", "product": "[doT] EO Mega_2.5g*90sfg_EUW", "customer": "doTERRA", "incoterms": "FOB", "transport": "", "qty": 32000, "unitPrice": 5.67, "receiptDate": "", "reqDelivery": "2026-07-07", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 181440, "poQty": 32000, "orderVal": 223360}, {"r": 45, "closing": "No", "product": "[doT] EO Mega_2.5g*90sfg_EUE", "customer": "doTERRA", "incoterms": "FOB", "transport": "", "qty": 8000, "unitPrice": 5.67, "receiptDate": "", "reqDelivery": "2026-07-07", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 45360, "poQty": 8000, "orderVal": 55840}, {"r": 46, "closing": "No", "product": "[YoungL] Green Omega 3 US_665.8g*60ct", "customer": "YOUNG LIVING ESSENTIAL OILS, LC", "incoterms": "FOB", "transport": "", "qty": 16000, "unitPrice": 5.83, "receiptDate": "", "reqDelivery": "2026-07-10", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 93280, "poQty": 16000, "orderVal": 121600}, {"r": 47, "closing": "No", "product": "[YoungL] Green Omega 3 60ct AT", "customer": "YOUNG LIVING ESSENTIAL OILS, LC", "incoterms": "FOB", "transport": "", "qty": 2000, "unitPrice": 5.83, "receiptDate": "", "reqDelivery": "2026-07-10", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 11660, "poQty": 2000, "orderVal": 15200}, {"r": 48, "closing": "No", "product": "[YoungL] Green Omega 3 CA_665.8g*60ct", "customer": "YOUNG LIVING ESSENTIAL OILS, LC", "incoterms": "FOB", "transport": "", "qty": 1000, "unitPrice": 5.83, "receiptDate": "", "reqDelivery": "2026-07-10", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 5830, "poQty": 1000, "orderVal": 7600}, {"r": 49, "closing": "No", "product": "[YoungL] Green Omega 3 MX_665.8g*60ct", "customer": "YOUNG LIVING ESSENTIAL OILS, LC", "incoterms": "FOB", "transport": "", "qty": 1000, "unitPrice": 5.83, "receiptDate": "", "reqDelivery": "2026-07-10", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 5830, "poQty": 1000, "orderVal": 7600}, {"r": 50, "closing": "No", "product": "[doT] EO Mega_2.5g*90sfg_EUW", "customer": "doTERRA", "incoterms": "FOB", "transport": "", "qty": 40000, "unitPrice": 5.67, "receiptDate": "", "reqDelivery": "2026-07-15", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 226800, "poQty": 40000, "orderVal": 279200}, {"r": 51, "closing": "No", "product": "[PRO] Keranat Oil Bulk_ 0.3g* 1000 sfg", "customer": "Prose", "incoterms": "DDP", "transport": "", "qty": 1800, "unitPrice": 41.34, "receiptDate": "", "reqDelivery": "2026-07-27", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 74412, "poQty": 1800, "orderVal": 99234}, {"r": 52, "closing": "No", "product": "[IM] HERS Jelly_20g*20sticks", "customer": "Immunotec", "incoterms": "FOB", "transport": "", "qty": 16000, "unitPrice": 3.21, "receiptDate": "", "reqDelivery": "2026-08-10", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 51360, "poQty": 16000, "orderVal": 68480}, {"r": 53, "closing": "No", "product": "[IM] HERS Jelly_20g*20sticks", "customer": "Immunotec", "incoterms": "FOB", "transport": "", "qty": 11500, "unitPrice": 3.21, "receiptDate": "", "reqDelivery": "2026-08-10", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 36915, "poQty": 11500, "orderVal": 49220}, {"r": 54, "closing": "No", "product": "[IM] HERS Jelly_20g*20sticks", "customer": "Immunotec", "incoterms": "FOB", "transport": "", "qty": 8000, "unitPrice": 3.21, "receiptDate": "", "reqDelivery": "2026-08-10", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 25680, "poQty": 8000, "orderVal": 34240}, {"r": 55, "closing": "No", "product": "[doT] EO Mega_2.5g*90sfg_EUW", "customer": "doTERRA", "incoterms": "FOB", "transport": "", "qty": 30000, "unitPrice": 5.67, "receiptDate": "", "reqDelivery": "2026-08-29", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 170100, "poQty": 30000, "orderVal": 209400}, {"r": 56, "closing": "No", "product": "[doT] EO Mega_2.5g*90sfg_EUE", "customer": "doTERRA", "incoterms": "FOB", "transport": "", "qty": 10000, "unitPrice": 5.67, "receiptDate": "", "reqDelivery": "2026-08-29", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 56700, "poQty": 10000, "orderVal": 69800}, {"r": 57, "closing": "No", "product": "[ALO] Digest & Debloat 650 mg * 60 cs", "customer": "Alo", "incoterms": "FOB", "transport": "", "qty": 6000, "unitPrice": 5.04, "receiptDate": "", "reqDelivery": "2026-06-29", "inTransit": "", "scheduled": "", "aa": 0, "ab": 0, "ac": 0, "ad": 0, "ae": 0, "az": 0, "revenue": 0, "cost": 0, "netProfit": 0, "margin": 0, "supplyAmt": 30240, "poQty": 6000, "orderVal": 40380}];
+const CC=["#1d4ed8", "#7c3aed", "#0891b2", "#059669", "#d97706", "#dc2626", "#8b5cf6", "#0284c7", "#64748b"];
+const MA=[1262227, 642819, 497249, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+const MSP=[1045527, 529636, 398284, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+const MP=[216700, 110431, 98965, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+const ML=[8, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+const MF=[4, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+const MD=[4, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+const MAI=[3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+const MOC=[5, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+const MB=[1336312, 820018, 144578, 1188450, 1638589, 966200, 1094950, 1060250, 1878560, 2021400, 1951600, 1947018];
+const MPIPE=[0, 0, 0, 826727, 1664958, 842995, 809634, 431140, 0, 0, 0, 0];
+const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function $c(n){return n===0?'—':'$'+Math.abs(Math.round(n)).toLocaleString();}
+function pct(n){return n===0?'—':(n*100).toFixed(1)+'%';}
+function chip(m){const c=m>.005?'pos':m<-.005?'neg':'zero';return `<span class="chip ${c}">${(m*100).toFixed(1)}%</span>`;}
+function chipV(v,m){const c=m>.005?'pos':m<-.005?'neg':'zero';return `<span class="chip ${c}">${v}</span>`;}
+function sc(v,m){const c=m>.01?'pos':m<-.01?'neg':'zero';return `<span class="chip ${c}">${(m*100).toFixed(1)}%</span>`;}
+
+// ── TAB SWITCH ──
+let moReady=false, currentCust=null;
+function goTab(id, el, custName){
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  if(el) el.classList.add('active');
+  else document.querySelectorAll('.sb-item').forEach(i=>{
+    if(i.getAttribute('onclick')&&i.getAttribute('onclick').includes("'"+id+"'")) i.classList.add('active');
+  });
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pane-'+id).classList.add('active');
+  const titles={overview:'Business Performance Overview',monthly:'Monthly Analysis Dashboard',
+    customers:'Customer Management',products:'Product Management',logistics:'Logistics Status'};
+  document.getElementById('pageTitle').textContent=titles[id]||id;
+  if(id==='monthly'&&!moReady){setTimeout(()=>{initMoCharts();moReady=true;updateMonthly();},40);}
+  else if(id==='monthly') updateMonthly();
+  if(id==='customers') initCustomerPage(custName);
+}
+
+// ── DONUT CHART ──
+(function(){
+  const top=Object.entries({"doTERRA": 1981997, "Prose": 187719, "YOUNG LIVING ESSENTIAL OILS, LC": 152471, "MANNATECH INC (U.S.A)": 59922, "SpoiledChild, Inc.": 20186}).sort((a,b)=>b[1]-a[1]).slice(0,9);
+  const ctot=top.reduce((s,[,v])=>s+v,0);
+  new Chart(document.getElementById('donutChart'),{
+    type:'doughnut',
+    data:{labels:top.map(([n])=>n),datasets:[{data:top.map(([,v])=>v),backgroundColor:CC,borderWidth:0,hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'70%',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}: ${$c(c.raw)} (${((c.raw/ctot)*100).toFixed(1)}%)`}}}}
+  });
+})();
+
+// ── PRODUCT NAVIGATION ──
+function goToProduct(pname){
+  goTab('products', null);
+  setTimeout(()=>selectProduct(pname), 100);
+}
+
+function toggleCustProds(el, cname){
+  const key=cname.replace(/ /g,'_').replace(/\./g,'').replace(/,/g,'');
+  const div=document.getElementById('prods-'+key);
+  const arrows=document.querySelectorAll('[id^="arrow-"]');
+  const allProds=document.querySelectorAll('[id^="prods-"]');
+  if(div.style.display==='none'){
+    allProds.forEach(d=>d.style.display='none');
+    arrows.forEach(a=>a.textContent='▶');
+    div.style.display='block';
+    el.querySelector('span[id^="arrow"]')||el.querySelector('span:last-child');
+    const arrow=el.querySelector('span:last-child');
+    if(arrow) arrow.textContent='▼';
+  }else{
+    div.style.display='none';
+    const arrow=el.querySelector('span:last-child');
+    if(arrow) arrow.textContent='▶';
+  }
+}
+
+function selectProduct(pname){
+  // highlight
+  document.querySelectorAll('.prod-item').forEach(i=>i.classList.remove('active'));
+  const prows=ROWS.filter(r=>r.product===pname);
+  if(!prows.length)return;
+  const cust=prows[0].customer;
+  const doneRows=prows.filter(r=>r.closing==='Yes');
+  const rev=doneRows.reduce((s,r)=>s+r.revenue,0);
+  const cost=doneRows.reduce((s,r)=>s+r.cost,0);
+  const np=doneRows.reduce((s,r)=>s+r.netProfit,0);
+  const qty=doneRows.reduce((s,r)=>s+r.qty,0);
+  const margin=rev>0?np/rev:0;
+  const mc=margin>.005?'pos':margin<-.005?'neg':'zero';
+
+  // Status counts
+  const nDone=prows.filter(r=>r.closing==='Yes').length;
+  const nTrans=prows.filter(r=>r.closing!=='Yes'&&r.inTransit).length;
+  const nSched=prows.filter(r=>r.closing!=='Yes'&&r.scheduled&&!r.inTransit).length;
+  const nPend=prows.length-nDone-nTrans-nSched;
+
+  let html=`
+    <div class="prod-detail-header">
+      <div>
+        <div class="prod-detail-name">${pname}</div>
+        <div class="prod-detail-cust">Customer: ${cust} · ${prows.length} PO lines total</div>
+      </div>
+      <span class="chip ${mc}">${(margin*100).toFixed(1)}% margin</span>
+    </div>
+    <div class="detail-kpi-row">
+      <div class="dkpi"><div class="lbl">Total POs</div><div class="val">${prows.length}</div></div>
+      <div class="dkpi"><div class="lbl">Revenue</div><div class="val" style="color:var(--blue);font-size:16px;">${rev>0?'$'+Math.round(rev).toLocaleString():'—'}</div></div>
+      <div class="dkpi"><div class="lbl">Total Cost</div><div class="val" style="font-size:16px;">${cost>0?'$'+Math.round(cost).toLocaleString():'—'}</div></div>
+      <div class="dkpi"><div class="lbl">Net Profit</div><div class="val ${np>=0?'pos':'neg'}" style="font-size:16px;">${np!==0?(np>0?'+':'')+' $'+Math.abs(Math.round(np)).toLocaleString():'—'}</div></div>
+      <div class="dkpi"><div class="lbl">Qty Shipped</div><div class="val">${qty.toLocaleString()}</div></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+      <span class="status-chip status-yes">✓ Done: ${nDone}</span>
+      <span class="status-chip status-transit">🚢 Transit: ${nTrans}</span>
+      <span class="status-chip status-sched">📅 Scheduled: ${nSched}</span>
+      <span class="status-chip status-pend">⏳ Pending: ${nPend}</span>
+    </div>
+    <div class="sec" style="font-size:12px;">Transaction History</div>
+    <div class="tbl"><table>
+    <thead><tr><th>#</th><th>Status</th><th>Qty</th><th>Unit Price</th><th>Revenue (AA)</th><th>Other Rev.</th><th>Total Rev.</th><th>G/R Amt</th><th>Freight</th><th>Customs</th><th>Net Profit</th><th>Margin</th><th>Incoterms</th><th>Transport</th><th>Receipt Date</th><th>Req. Delivery</th></tr></thead><tbody>`;
+
+  prows.forEach((r,i)=>{
+    let status,sc;
+    if(r.closing==='Yes'){status='✓ Done';sc='status-yes';}
+    else if(r.inTransit){status='🚢 Transit';sc='status-transit';}
+    else if(r.scheduled){status='📅 Sched';sc='status-sched';}
+    else{status='⏳ Pending';sc='status-pend';}
+    const pc=r.netProfit>0?'pos':r.netProfit<0?'neg':'';
+    const mc2=r.margin>0.5?'pos':r.margin<-0.5?'neg':'zero';
+    html+=`<tr>
+      <td style="color:var(--text2)">${i+1}</td>
+      <td><span class="status-chip ${sc}">${status}</span></td>
+      <td>${r.qty.toLocaleString()}</td><td>${r.unitPrice>0?'$'+r.unitPrice:'—'}</td>
+      <td>${r.aa>0?'$'+r.aa.toLocaleString():'—'}</td>
+      <td>${r.ab>0?'$'+r.ab.toLocaleString():'—'}</td>
+      <td class="${r.revenue>0?'pos':''}" style="font-weight:600">${r.revenue>0?'$'+r.revenue.toLocaleString():'—'}</td>
+      <td>${r.ac>0?'$'+r.ac.toLocaleString():'—'}</td>
+      <td>${r.ad>0?'$'+r.ad.toLocaleString():'—'}</td>
+      <td>${r.ae>0?'$'+r.ae.toLocaleString():'—'}</td>
+      <td class="${pc}">${r.netProfit!==0?(r.netProfit>0?'+':'')+' $'+Math.abs(r.netProfit).toLocaleString():'—'}</td>
+      <td><span class="chip ${mc2}">${r.margin.toFixed(1)}%</span></td>
+      <td>${r.incoterms}</td><td>${r.transport}</td>
+      <td>${r.receiptDate||'—'}</td><td>${r.reqDelivery||'—'}</td>
+    </tr>`;
+  });
+  html+='</tbody></table></div>';
+  document.getElementById('prodDetail').innerHTML=html;
+}
+
+// ── CUSTOMER PAGE ──
+function initCustomerPage(selectName){
+  const custs={"doTERRA": {"rev": 1981997, "cost": 1607759, "np": 374238, "qty": 285678, "done": 7, "pend": 13, "ov": 4951422, "margin": 18.9, "total": 20}, "Prose": {"rev": 187719, "cost": 161859, "np": 23108, "qty": 2368, "done": 2, "pend": 4, "ov": 472344, "margin": 12.3, "total": 6}, "YOUNG LIVING ESSENTIAL OILS, LC": {"rev": 152471, "cost": 116961, "np": 35510, "qty": 20062, "done": 3, "pend": 6, "ov": 456471, "margin": 23.3, "total": 9}, "MANNATECH INC (U.S.A)": {"rev": 59922, "cost": 66528, "np": -6606, "qty": 8066, "done": 1, "pend": 7, "ov": 292182, "margin": -11.0, "total": 8}, "SpoiledChild, Inc.": {"rev": 20186, "cost": 20340, "np": -154, "qty": 539, "done": 3, "pend": 0, "ov": 14475, "margin": -0.8, "total": 3}, "Alo": {"rev": 0, "cost": 0, "np": 0, "qty": 0, "done": 0, "pend": 4, "ov": 134937, "margin": 0, "total": 4}, "ExegiPharma": {"rev": 0, "cost": 0, "np": 0, "qty": 0, "done": 0, "pend": 2, "ov": 79279, "margin": 0, "total": 2}, "Immunotec": {"rev": 0, "cost": 0, "np": 0, "qty": 0, "done": 0, "pend": 3, "ov": 151940, "margin": 0, "total": 3}, "Limelife USA": {"rev": 0, "cost": 0, "np": 0, "qty": 0, "done": 0, "pend": 1, "ov": 354000, "margin": 0, "total": 1}};
+  if(selectName) selectCustomer(selectName);
+  else selectCustomer('doTERRA');
+}
+
+function selectCustomer(name){
+  document.querySelectorAll('.cust-item').forEach(i=>i.classList.remove('active'));
+  event&&event.target&&event.target.closest('.cust-item')&&event.target.closest('.cust-item').classList.add('active');
+  const crows=ROWS.filter(r=>r.customer===name);
+  const doneRows=crows.filter(r=>r.closing==='Yes');
+  const rev=doneRows.reduce((s,r)=>s+r.revenue,0);
+  const cost=doneRows.reduce((s,r)=>s+r.cost,0);
+  const np=doneRows.reduce((s,r)=>s+r.netProfit,0);
+  const margin=rev>0?np/rev:0;
+  const mc=margin>.005?'pos':margin<-.005?'neg':'zero';
+  const nDone=crows.filter(r=>r.closing==='Yes').length;
+  const nTrans=crows.filter(r=>r.closing!=='Yes'&&r.inTransit).length;
+  const nSched=crows.filter(r=>r.closing!=='Yes'&&r.scheduled&&!r.inTransit).length;
+  const nPend=crows.length-nDone-nTrans-nSched;
+
+  // Products for this customer
+  const prods=[...new Set(crows.map(r=>r.product))];
+
+  let html=`
+    <div class="prod-detail-header">
+      <div><div class="prod-detail-name">${name}</div>
+        <div class="prod-detail-cust">${crows.length} PO lines · ${prods.length} product(s)</div></div>
+      <span class="chip ${mc}">${(margin*100).toFixed(1)}% margin</span>
+    </div>
+    <div class="detail-kpi-row">
+      <div class="dkpi"><div class="lbl">Total POs</div><div class="val">${crows.length}</div></div>
+      <div class="dkpi"><div class="lbl">Revenue</div><div class="val" style="color:var(--blue);font-size:16px;">${rev>0?'$'+Math.round(rev).toLocaleString():'$0'}</div></div>
+      <div class="dkpi"><div class="lbl">Total Cost</div><div class="val" style="font-size:16px;">${cost>0?'$'+Math.round(cost).toLocaleString():'$0'}</div></div>
+      <div class="dkpi"><div class="lbl">Net Profit</div><div class="val ${np>=0?'pos':'neg'}" style="font-size:16px;">${np!==0?(np>0?'+':'')+' $'+Math.abs(Math.round(np)).toLocaleString():'$0'}</div></div>
+      <div class="dkpi"><div class="lbl">Products</div><div class="val">${prods.length}</div></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;">
+      <span class="status-chip status-yes">✓ Done: ${nDone}</span>
+      <span class="status-chip status-transit">🚢 Transit: ${nTrans}</span>
+      <span class="status-chip status-sched">📅 Scheduled: ${nSched}</span>
+      <span class="status-chip status-pend">⏳ Pending: ${nPend}</span>
+    </div>
+    <div class="sec" style="font-size:12px;margin-bottom:10px;">Product Summary</div>
+    <div class="tbl" style="margin-bottom:16px;"><table>
+    <thead><tr><th>Product</th><th>POs</th><th>Revenue</th><th>Cost</th><th>Net Profit</th><th>Margin</th></tr></thead><tbody>`;
+
+  prods.forEach(p=>{
+    const pr=crows.filter(r=>r.product===p&&r.closing==='Yes');
+    const prev=pr.reduce((s,r)=>s+r.revenue,0);
+    const pcost=pr.reduce((s,r)=>s+r.cost,0);
+    const pnp=pr.reduce((s,r)=>s+r.netProfit,0);
+    const pmarg=prev>0?pnp/prev:0;
+    const mc2=pmarg>.005?'pos':pmarg<-.005?'neg':'zero';
+    html+=`<tr class="clickable" onclick="goToProduct('${p.replace(/'/g,"\'")}')">
+      <td style="font-size:12px;">${p}</td><td>${crows.filter(r=>r.product===p).length}</td>
+      <td>${prev>0?'$'+Math.round(prev).toLocaleString():'—'}</td>
+      <td>${pcost>0?'$'+Math.round(pcost).toLocaleString():'—'}</td>
+      <td class="${pnp>=0?'pos':'neg'}">${pnp!==0?(pnp>0?'+':'')+' $'+Math.abs(Math.round(pnp)).toLocaleString():'—'}</td>
+      <td>${chip(pmarg)}</td></tr>`;
+  });
+  html+='</tbody></table></div>';
+
+  html+=`<div class="sec" style="font-size:12px;margin-bottom:10px;">All PO Lines</div>
+    <div class="tbl"><table>
+    <thead><tr><th>Product</th><th>Status</th><th>Qty</th><th>Revenue</th><th>Net Profit</th><th>Margin</th><th>Incoterms</th><th>Transport</th><th>Receipt Date</th><th>Req.Delivery</th></tr></thead><tbody>`;
+
+  crows.forEach(r=>{
+    let status,sc;
+    if(r.closing==='Yes'){status='✓ Done';sc='status-yes';}
+    else if(r.inTransit){status='🚢 Transit';sc='status-transit';}
+    else if(r.scheduled){status='📅 Sched';sc='status-sched';}
+    else{status='⏳ Pending';sc='status-pend';}
+    const pc=r.netProfit>0?'pos':r.netProfit<0?'neg':'';
+    const mc2=r.margin>0.5?'pos':r.margin<-0.5?'neg':'zero';
+    html+=`<tr><td style="font-size:11px;">${r.product}</td>
+      <td><span class="status-chip ${sc}">${status}</span></td>
+      <td>${r.qty.toLocaleString()}</td>
+      <td>${r.revenue>0?'$'+r.revenue.toLocaleString():'—'}</td>
+      <td class="${pc}">${r.netProfit!==0?(r.netProfit>0?'+':'')+' $'+Math.abs(r.netProfit).toLocaleString():'—'}</td>
+      <td><span class="chip ${mc2}">${r.margin.toFixed(1)}%</span></td>
+      <td>${r.incoterms}</td><td>${r.transport}</td>
+      <td>${r.receiptDate||'—'}</td><td>${r.reqDelivery||'—'}</td></tr>`;
+  });
+  html+='</tbody></table></div>';
+  document.getElementById('custDetail').innerHTML=html;
+}
+
+// ── MONTHLY CHARTS (with data labels) ──
+let moTrObj=null,moCumObj=null,moCustObj=null;
+function initMoCharts(){
+  const cumA=MA.reduce((a,v,i)=>{a.push((a[i-1]||0)+v);return a;},[]);
+  const cumP=MA.map((v,i)=>{
+    const a=cumA[i],p=MPIPE.slice(0,i+1).reduce((s,x)=>s+x,0);
+    return (a+p)>0?a+p:null;
+  });
+  const cumB=MB.reduce((a,v,i)=>{a.push((a[i-1]||0)+v);return a;},[]);
+
+  const dataLabelPlugin={
+    id:'dataLabels',
+    afterDatasetsDraw(chart){
+      const {ctx}=chart;
+      chart.data.datasets.forEach((ds,i)=>{
+        if(ds.type==='line'||!ds.showLabels) return;
+        const meta=chart.getDatasetMeta(i);
+        meta.data.forEach((el,j)=>{
+          const val=ds.data[j];
+          if(!val||val<=0) return;
+          ctx.save();
+          ctx.font='bold 9px Inter,sans-serif';
+          ctx.fillStyle='#374151';
+          ctx.textAlign='center';
+          ctx.fillText('$'+(val/1000).toFixed(0)+'K',el.x,el.y-4);
+          ctx.restore();
+        });
+      });
+    }
+  };
+
+  moTrObj=new Chart(document.getElementById('moTrCh'),{
+    type:'bar',
+    plugins:[dataLabelPlugin],
+    data:{labels:MN,datasets:[
+      {label:'Actual',data:MA,backgroundColor:'#1d4ed8',stack:'s',borderRadius:3,order:2,showLabels:true},
+      {label:'Pipeline',data:MPIPE,backgroundColor:'rgba(124,58,237,.55)',stack:'s',borderRadius:3,order:2,showLabels:true},
+      {label:'Budget',data:MB,type:'line',borderColor:'#d97706',borderWidth:2,borderDash:[6,4],pointRadius:4,pointBackgroundColor:'#d97706',pointBorderColor:'#fff',pointBorderWidth:1.5,backgroundColor:'transparent',fill:false,order:1,datalabels:{display:false}}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: $${Math.round(c.raw).toLocaleString()}`}}},
+      scales:{x:{stacked:true,grid:{color:'#f3f4f6'},ticks:{font:{size:10}}},
+               y:{stacked:true,grid:{color:'#f3f4f6'},ticks:{callback:v=>'$'+Math.round(v/1000)+'K',font:{size:10}}}}}
+  });
+  document.getElementById('moTrLeg').innerHTML=`
+    <span class="leg"><span class="leg-d" style="background:#1d4ed8"></span>Actual</span>
+    <span class="leg"><span class="leg-d" style="background:rgba(124,58,237,.8)"></span>Pipeline</span>
+    <span class="leg"><span class="leg-d" style="background:#d97706"></span>Budget</span>`;
+
+  moCumObj=new Chart(document.getElementById('moCumCh'),{
+    type:'line',
+    data:{labels:MN,datasets:[
+      {label:'Actual YTD',data:cumA,borderColor:'#1d4ed8',backgroundColor:'rgba(29,78,216,.06)',fill:true,borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#fff',pointBorderColor:'#1d4ed8',pointBorderWidth:2,tension:.3},
+      {label:'Actual+Pipeline',data:cumP,borderColor:'#7c3aed',backgroundColor:'rgba(124,58,237,.06)',fill:true,borderWidth:2,borderDash:[5,4],pointRadius:3,pointBackgroundColor:'#7c3aed',tension:.3,spanGaps:false},
+      {label:'Budget',data:cumB,borderColor:'#d97706',backgroundColor:'transparent',borderWidth:2,borderDash:[8,5],pointRadius:0,tension:.3,fill:false}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:c=>c.raw!=null?`${c.dataset.label}: $${Math.round(c.raw).toLocaleString()}`:''  }}},
+      scales:{x:{grid:{color:'#f3f4f6'},ticks:{font:{size:10}}},
+               y:{grid:{color:'#f3f4f6'},ticks:{callback:v=>'$'+(v/1e6).toFixed(1)+'M',font:{size:10}}}}}
+  });
+  document.getElementById('moCumLeg').innerHTML=`
+    <span class="leg"><span class="leg-d" style="background:#1d4ed8"></span>Actual YTD</span>
+    <span class="leg"><span class="leg-d" style="background:#7c3aed"></span>Actual+Pipeline</span>
+    <span class="leg"><span class="leg-d" style="background:#d97706"></span>Budget</span>`;
+}
+
+// ── MONTHLY UPDATE ──
+function updateMonthly(){
+  const mo=parseInt(document.getElementById('moSel').value);
+  const i=mo===0?null:mo-1;
+  const s=i!==null?MA[i]:MA.reduce((a,b)=>a+b,0);
+  const sp=i!==null?MSP[i]:MSP.reduce((a,b)=>a+b,0);
+  const pr=i!==null?MP[i]:MP.reduce((a,b)=>a+b,0);
+  const pl=i!==null?ML[i]:ML.reduce((a,b)=>a+b,0);
+  const fb=i!==null?MF[i]:MF.reduce((a,b)=>a+b,0);
+  const dp=i!==null?MD[i]:MD.reduce((a,b)=>a+b,0);
+  const ar=i!==null?MAI[i]:MAI.reduce((a,b)=>a+b,0);
+  const oc=i!==null?MOC[i]:MOC.reduce((a,b)=>a+b,0);
+
+  document.getElementById('mo-s').textContent=s>0?'$'+Math.round(s).toLocaleString():'$0';
+  document.getElementById('mo-sp').textContent=sp>0?'$'+Math.round(sp).toLocaleString():'$0';
+  const pe=document.getElementById('mo-p');
+  pe.textContent=pr!==0?(pr>0?'+$':'-$')+Math.abs(Math.round(pr)).toLocaleString():'$0';
+  pe.style.color=pr>=0?'var(--green)':'var(--red)';
+  document.getElementById('mo-m').textContent=s>0?(pr/s*100).toFixed(1)+'%':'—';
+  document.getElementById('mo-l').textContent=pl;
+  document.getElementById('mo-f').textContent=fb;
+  document.getElementById('mo-d').textContent=dp;
+  document.getElementById('mo-a').textContent=ar;
+  document.getElementById('mo-o').textContent=oc;
+
+  // Monthly customer breakdown from ROWS
+  const moRows=mo===0?ROWS.filter(r=>r.closing==='Yes'):ROWS.filter(r=>{
+    if(r.closing!=='Yes'||!r.receiptDate) return false;
+    try{return parseInt(r.receiptDate.split('-')[1])===mo&&parseInt(r.receiptDate.split('-')[0])===2026;}catch{return false;}
+  });
+  const custGroups={};
+  moRows.forEach(r=>{
+    if(!custGroups[r.customer]) custGroups[r.customer]={lines:0,rev:0,sup:0,np:0,fob:0,ddp:0,air:0,ocean:0};
+    const g=custGroups[r.customer];
+    g.lines++;g.rev+=r.revenue;g.sup+=r.cost;g.np+=r.netProfit;
+    if(r.incoterms.includes('FOB'))g.fob++;
+    if(r.incoterms.includes('DDP'))g.ddp++;
+    if(r.transport.includes('Air'))g.air++;
+    if(r.transport.includes('Ocean'))g.ocean++;
+  });
+  const tb=document.getElementById('mo-ctb');
+  let ts=0,tsp=0,tnp=0,tl=0,tf=0,td=0,ta=0,to=0;
+  tb.innerHTML='';
+  Object.entries(custGroups).sort((a,b)=>b[1].rev-a[1].rev).forEach(([n,g])=>{
+    const mr=g.rev>0?g.np/g.rev:0;
+    const pc=g.np>0?'pos':g.np<0?'neg':'';
+    tb.innerHTML+=`<tr><td>${n}</td><td>${g.lines}</td><td>${g.rev>0?$c(g.rev):'—'}</td><td>${g.sup>0?$c(g.sup):'—'}</td>
+      <td class="${pc}">${g.np!==0?(g.np>0?'+':'')+' '+$c(Math.abs(g.np)):'—'}</td>
+      <td>${chip(mr)}</td><td>${g.fob}</td><td>${g.ddp}</td><td>${g.air}</td><td>${g.ocean}</td></tr>`;
+    ts+=g.rev;tsp+=g.sup;tnp+=g.np;tl+=g.lines;tf+=g.fob;td+=g.ddp;ta+=g.air;to+=g.ocean;
+  });
+  if(!Object.keys(custGroups).length){
+    tb.innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--text2);padding:18px;">No confirmed data</td></tr>';
+  }else{
+    const tmr=ts>0?(tnp/ts*100).toFixed(1)+'%':'—';
+    tb.innerHTML+=`<tr class="tot"><td>TOTAL</td><td>${tl}</td><td>${$c(ts)}</td><td>${$c(tsp)}</td>
+      <td class="${tnp>=0?'pos':'neg'}">${(tnp>0?'+':'')+' '+$c(Math.abs(tnp))}</td>
+      <td><span class="chip ${tnp>=0?'pos':'neg'}">${tmr}</span></td>
+      <td>${tf}</td><td>${td}</td><td>${ta}</td><td>${to}</td></tr>`;
+  }
+
+  // Customer bar
+  if(moCustObj)moCustObj.destroy();
+  const ce=Object.entries(custGroups).filter(([,g])=>g.rev>0).sort((a,b)=>b[1].rev-a[1].rev);
+  if(ce.length){
+    moCustObj=new Chart(document.getElementById('moCustCh'),{
+      type:'bar',
+      data:{labels:ce.map(([n])=>n),datasets:[{data:ce.map(([,g])=>g.rev),backgroundColor:CC.slice(0,ce.length),borderRadius:6,
+        datalabels:{display:true}
+      }]},
+      options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+        plugins:{legend:{display:false},
+          tooltip:{callbacks:{label:c=>'$'+Math.round(c.raw).toLocaleString()}}},
+        scales:{x:{grid:{color:'#f3f4f6'},ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'K',font:{size:10}}},y:{grid:{display:false},ticks:{font:{size:11}}}}}
+    });
+  }
+
+  // Product detail
+  const prodGroups={};
+  moRows.forEach(r=>{
+    if(!prodGroups[r.product]) prodGroups[r.product]={aa:0,ab:0,ac:0,ad:0,ae:0,az:0,np:0};
+    const g=prodGroups[r.product];
+    g.aa+=r.aa;g.ab+=r.ab;g.ac+=r.ac;g.ad+=r.ad;g.ae+=r.ae;g.az+=r.az;g.np+=r.netProfit;
+  });
+  const dt=document.getElementById('mo-dtb');
+  let dts=0,dtc=0,dtp=0;
+  dt.innerHTML='';
+  Object.entries(prodGroups).sort((a,b)=>(b[1].aa+b[1].ab)-(a[1].aa+a[1].ab)).forEach(([n,g])=>{
+    const rev=g.aa+g.ab,cost=g.ac+g.ad+g.ae+g.az;
+    const pc=g.np>0?'pos':g.np<0?'neg':'';
+    const mc2=rev>0&&g.np/rev>.005?'pos':g.np<0?'neg':'zero';
+    dt.innerHTML+=`<tr><td style="font-size:11px;">${n}</td>
+      <td>${g.aa>0?Math.round(g.aa).toLocaleString():'—'}</td><td>${g.ab>0?Math.round(g.ab).toLocaleString():'—'}</td>
+      <td class="pos" style="font-weight:600">${$c(rev)}</td>
+      <td>${g.ac>0?Math.round(g.ac).toLocaleString():'—'}</td><td>${g.ad>0?Math.round(g.ad).toLocaleString():'—'}</td>
+      <td>${g.ae>0?Math.round(g.ae).toLocaleString():'—'}</td><td>${g.az>0?Math.round(g.az).toLocaleString():'—'}</td>
+      <td style="font-weight:500">${$c(cost)}</td>
+      <td class="${pc}">${g.np!==0?(g.np>0?'+':'')+' '+$c(Math.abs(g.np)):'—'}</td>
+      <td>${rev>0?chip(g.np/rev):'<span class=\"chip zero\">—</span>'}</td></tr>`;
+    dts+=rev;dtc+=cost;dtp+=g.np;
+  });
+  if(!Object.keys(prodGroups).length){
+    dt.innerHTML='<tr><td colspan="11" style="text-align:center;color:var(--text2);padding:18px;">No data</td></tr>';
+  }else{
+    dt.innerHTML+=`<tr class="tot"><td>TOTAL</td><td>—</td><td>—</td><td class="pos">${$c(dts)}</td><td>—</td><td>—</td><td>—</td><td>—</td><td>${$c(dtc)}</td>
+      <td class="${dtp>=0?'pos':'neg'}">${(dtp>0?'+':'')+' '+$c(Math.abs(dtp))}</td>
+      <td><span class="chip ${dtp>=0?'pos':'neg'}">${dts>0?(dtp/dts*100).toFixed(1)+'%':'—'}</span></td></tr>`;
+  }
+}
+
+// Init
+document.addEventListener('DOMContentLoaded',()=>{
+  initCustomerPage(null);
+});
+</script>
+</div>
+</body></html>
